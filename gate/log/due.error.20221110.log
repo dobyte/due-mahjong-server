@@ -1,0 +1,12 @@
+FATA[2022/11/10 20:04:09.401236] /Users/fuxiao/Documents/Golang/dobyte/due/cluster/gate/proxy.go:189 user locate event watch failed: dial tcp 127.0.0.1:6379: connect: connection refused
+Stack:
+1.github.com/dobyte/due/cluster/gate.(*proxy).watch
+	/Users/fuxiao/Documents/Golang/dobyte/due/cluster/gate/proxy.go:189
+2.github.com/dobyte/due/cluster/gate.(*Gate).Start
+	/Users/fuxiao/Documents/Golang/dobyte/due/cluster/gate/gate.go:90
+3.github.com/dobyte/due.(*Container).Serve
+	/Users/fuxiao/Documents/Golang/dobyte/due/container.go:37
+4.main.main
+	/Users/fuxiao/Documents/Golang/dobyte/due-mahjong-server/gate/main.go:32
+5.runtime.main
+	/usr/local/go/src/runtime/proc.go:255

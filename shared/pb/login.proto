@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+option go_package = "./pb/login";
+
+package login;
+
+// 返回码
+enum Code {
+  OK = 0; // 成功
+  Failed = 1; // 失败
+  Abnormal = 2; // 解析异常
+  IllegalParams = 3; // 参数非法
+  IncorrectAccountOrPassword = 4; // 账号或密码错误
+}
+
+// 登录模式
+enum LoginMode {
+  None = 0; // 默认
+  Guest = 1; // 来宾登录
+  Mobile = 2; // 手机登录
+  Account = 3; // 账号登录
+  Wechat = 4; // 微信登录
+  Google = 5; // 谷歌登录
+  Facebook = 6; // 脸书登录
+  Token = 7; // TOKEN登录
+}
+
+// 用户登录请求
+message LoginReq {
+  LoginMode Mode = 1; // 登录模式
+  optional string DeviceID = 2; // 设备ID
+  optional string Account = 3; // 账号
+  optional string Password = 4; // 密码
+  optional string Openid = 5; // openid
+  optional string Mobile = 6; // 手机号
+  optional string Code = 7; // 验证码
+  optional string Token = 8; // TOKEN，微信、脸书、谷歌均用此token
+}
+
+// 用户登录响应
+message LoginRes {
+  Code Code = 1; // 错误码
+  string Token = 2; // TOKEN
+}
+
+message Login {
+
+}
+

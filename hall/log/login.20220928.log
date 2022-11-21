@@ -1,0 +1,12 @@
+FATA[2022/09/28 10:45:41.130424] mongo.go:42 mongo connect failed: connection() error occurred during connection handshake: auth error: unable to authenticate using mechanism "SCRAM-SHA-256": (AuthenticationFailed) Authentication failed.
+FATA[2022/09/28 10:56:21.273001] mongo.go:43 mongo connect failed: connection() error occurred during connection handshake: auth error: unable to authenticate using mechanism "SCRAM-SHA-256": (AuthenticationFailed) Authentication failed.
+DEBU[2022/09/28 10:59:06.384023] container.go:76 Welcome to the due framework, Learn more at https://github.com/dobyte/due
+DEBU[2022/09/28 10:59:07.128422] node.go:321 The node server startup successful
+DEBU[2022/09/28 10:59:07.128642] node.go:322 GRPC server, listen: 0.0.0.0:3200 protocol: grpc
+DEBU[2022/09/28 10:59:07.197292] watcher.go:108 channel subscribe succeeded, due:locate:channel:gate:event
+DEBU[2022/09/28 10:59:07.197488] watcher.go:108 channel subscribe succeeded, due:locate:channel:node:event
+DEBU[2022/09/28 11:01:59.086116] container.go:76 Welcome to the due framework, Learn more at https://github.com/dobyte/due
+DEBU[2022/09/28 11:01:59.158540] node.go:321 The node server startup successful
+DEBU[2022/09/28 11:01:59.158629] node.go:322 GRPC server, listen: 0.0.0.0:3200 protocol: grpc
+DEBU[2022/09/28 11:01:59.166517] watcher.go:108 channel subscribe succeeded, due:locate:channel:gate:event
+DEBU[2022/09/28 11:01:59.166660] watcher.go:108 channel subscribe succeeded, due:locate:channel:node:event
