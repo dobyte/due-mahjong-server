@@ -5,10 +5,12 @@ import (
 	"due-mahjong-server/hall/app/code"
 	"due-mahjong-server/shared/components/google"
 	"due-mahjong-server/shared/components/jwt"
+	"due-mahjong-server/shared/components/mongo"
 	dao "due-mahjong-server/shared/dao/user"
 	model "due-mahjong-server/shared/model/user"
 	pb "due-mahjong-server/shared/pb/login"
 	"due-mahjong-server/shared/route"
+	"due-mahjong-server/shared/utils/xcrypt"
 	"due-mahjong-server/shared/utils/xvalidate"
 	"github.com/dobyte/due/cluster/node"
 	"github.com/dobyte/due/config"
@@ -29,7 +31,7 @@ func NewLogin(proxy node.Proxy) *login {
 	return &login{
 		proxy:   proxy,
 		ctx:     context.Background(),
-		userDao: dao.NewUser(),
+		userDao: dao.NewUser(mongo.DB()),
 	}
 }
 
@@ -77,9 +79,9 @@ func (l *login) login(r node.Request) {
 	case pb.LoginMode_Account:
 		uid, err = l.doAccountLogin(req.GetAccount(), req.GetPassword(), clientIP)
 	case pb.LoginMode_Wechat:
-		uid, err = l.doWechatLogin(req.GetOpenid(), clientIP)
+		uid, err = l.doWechatLogin(req.GetOpenid(), req.GetDeviceID(), clientIP)
 	case pb.LoginMode_Google:
-		uid, err = l.doGoogleLogin(req.GetToken(), clientIP)
+		uid, err = l.doGoogleLogin(req.GetToken(), req.GetDeviceID(), clientIP)
 	case pb.LoginMode_Token:
 		uid, err = l.doTokenLogin(req.GetToken(), clientIP)
 	default:
@@ -162,6 +164,15 @@ func (l *login) doAccountLogin(account string, password string, clientIP string)
 		return 0, errors.NewError(code.NotFoundUser)
 	}
 
+	ok, err := xcrypt.Compare(user.Password, password, user.Salt)
+	if err != nil {
+		return 0, err
+	}
+
+	if !ok {
+		return 0, errors.NewError(code.WrongPassword)
+	}
+
 	l.doUpdateLoginRecord(user.ID, clientIP)
 
 	return user.UID, nil
@@ -192,18 +203,18 @@ func (l *login) doMobileLogin(mobile string, code string, clientIP string) (int6
 }
 
 // 微信登录
-func (l *login) doWechatLogin(openid string, clientIP string) (int64, error) {
+func (l *login) doWechatLogin(openid, deviceID, clientIP string) (int64, error) {
 	return 0, nil
 }
 
 // Google登录
-func (l *login) doGoogleLogin(idToken string, clientIP string) (int64, error) {
+func (l *login) doGoogleLogin(idToken, deviceID, clientIP string) (int64, error) {
 	tokenInfo, err := google.OAuth2().Tokeninfo().IdToken(idToken).Do()
 	if err != nil {
 		return 0, err
 	}
 
-	user, err := l.userDao.FindOneByOpenid(l.ctx, model.ThirdPlatformGoogle, tokenInfo.UserId)
+	user, err := l.userDao.FindOneByGoogleUserId(l.ctx, tokenInfo.UserId)
 	if err != nil {
 		return 0, err
 	}
@@ -211,7 +222,8 @@ func (l *login) doGoogleLogin(idToken string, clientIP string) (int64, error) {
 	if user == nil {
 		user = &model.User{
 			Type:           model.TypeGeneral,
-			ThirdPlatforms: map[model.ThirdPlatform]string{model.ThirdPlatformGoogle: tokenInfo.UserId},
+			ThirdPlatforms: model.ThirdPlatforms{Google: tokenInfo.UserId},
+			DeviceID:       deviceID,
 			RegisterIP:     clientIP,
 			LastLoginIP:    clientIP,
 		}
@@ -234,7 +246,7 @@ func (l *login) doTokenLogin(token string, clientIP string) (int64, error) {
 func (l *login) doCreateUser(user *model.User) error {
 	user.Coin = 100
 
-	_, err := l.userDao.CreateOne(l.ctx, user)
+	_, err := l.userDao.InsertOne(l.ctx, user)
 	return err
 }
 

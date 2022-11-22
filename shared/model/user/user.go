@@ -42,7 +42,7 @@ type User struct {
 	UID            int64              `bson:"uid" gen:"autoIncr:uid"`         // 用户ID
 	Account        string             `bson:"account"`                        // 用户账号
 	Password       string             `bson:"password"`                       // 用户密码
-	Salt           string             `json:"salt"`                           // 密码
+	Salt           string             `bson:"salt"`                           // 密码
 	Mobile         string             `bson:"mobile"`                         // 用户手机
 	Email          string             `bson:"email"`                          // 用户邮箱
 	Nickname       string             `bson:"nickname"`                       // 用户昵称
