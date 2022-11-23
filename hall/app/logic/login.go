@@ -2,7 +2,7 @@ package logic
 
 import (
 	"context"
-	"due-mahjong-server/hall/app/code"
+	"due-mahjong-server/shared/code"
 	"due-mahjong-server/shared/components/google"
 	"due-mahjong-server/shared/components/jwt"
 	"due-mahjong-server/shared/components/mongo"

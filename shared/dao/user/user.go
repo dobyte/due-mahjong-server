@@ -18,6 +18,13 @@ func NewUser(db *mongo.Database) *User {
 	return &User{User: internal.NewUser(db)}
 }
 
+// FindOneByUID 根据用户ID查找
+func (dao *User) FindOneByUID(ctx context.Context, uid int64) (*user.User, error) {
+	return dao.FindOne(ctx, func(cols *internal.Columns) interface{} {
+		return bson.M{cols.UID: uid}
+	})
+}
+
 // FindOneByMobile 根据手机号查找
 func (dao *User) FindOneByMobile(ctx context.Context, mobile string) (*user.User, error) {
 	return dao.FindOne(ctx, func(cols *internal.Columns) interface{} {

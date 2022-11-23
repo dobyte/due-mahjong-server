@@ -8,4 +8,5 @@ const (
 const (
 	FetchMailList = 100 // 拉取邮件列表
 	ReadMail      = 101 // 读取邮件
+	NewMail       = 102 // 通知新邮件
 )

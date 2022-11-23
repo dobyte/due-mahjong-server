@@ -41,6 +41,7 @@ type Columns struct {
 	Mobile         string
 	Email          string
 	Nickname       string
+	Avatar         string
 	Signature      string
 	Gender         string
 	Level          string
@@ -61,10 +62,11 @@ var userColumns = &Columns{
 	UID:            "uid",
 	Account:        "account",
 	Password:       "password",
-	Salt:           "",
+	Salt:           "salt",
 	Mobile:         "mobile",
 	Email:          "email",
 	Nickname:       "nickname",
+	Avatar:         "avatar",
 	Signature:      "signature",
 	Gender:         "gender",
 	Level:          "level",

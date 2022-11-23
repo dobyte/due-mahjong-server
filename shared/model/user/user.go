@@ -46,6 +46,7 @@ type User struct {
 	Mobile         string             `bson:"mobile"`                         // 用户手机
 	Email          string             `bson:"email"`                          // 用户邮箱
 	Nickname       string             `bson:"nickname"`                       // 用户昵称
+	Avatar         string             `bson:"avatar"`                         // 用户头像
 	Signature      string             `bson:"signature"`                      // 用户签名
 	Gender         Gender             `bson:"gender"`                         // 用户性别
 	Level          int                `bson:"level"`                          // 用户等级
