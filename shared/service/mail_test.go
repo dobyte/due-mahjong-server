@@ -21,3 +21,12 @@ func TestMail_Send(t *testing.T) {
 
 	t.Log(mailID)
 }
+
+func TestMail_Delete(t *testing.T) {
+	svc := service.NewMail(nil)
+
+	err := svc.Delete("637dfc7116fd1799bbc1a378", true)
+	if err != nil {
+		t.Fatal(err)
+	}
+}

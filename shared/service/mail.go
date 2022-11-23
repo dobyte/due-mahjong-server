@@ -118,6 +118,35 @@ func (s *Mail) Send(receiver int64, sender mailargs.Sender, mail mailargs.Mail) 
 	return model.ID.String(), nil
 }
 
+// Delete 删除邮件
+func (s *Mail) Delete(mailID string, isForce bool) error {
+	mail, err := s.mailDao.FindOneByID(s.ctx, mailID)
+	if err != nil {
+		return errors.NewError(code.InternalServerError, err)
+	}
+
+	if mail == nil {
+		return nil
+	}
+
+	if !isForce {
+		if mail.Status == mailmodel.StatusUnread {
+			return errors.NewError(code.NoPermission, "cannot delete unread mail")
+		}
+
+		if len(mail.Attachments) > 0 && mail.Status != mailmodel.StatusReceived {
+			return errors.NewError(code.NoPermission, "cannot delete unreceived mail")
+		}
+	}
+
+	err = s.mailDao.DeleteOneByID(s.ctx, mailID)
+	if err != nil {
+		return errors.NewError(code.InternalServerError, err)
+	}
+
+	return nil
+}
+
 func (s *Mail) List() {
 
 }
