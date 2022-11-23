@@ -33,9 +33,7 @@ func NewMail(proxy node.Proxy) *Mail {
 
 // Send 发送邮件
 func (s *Mail) Send(receiver int64, sender mailargs.Sender, mail mailargs.Mail) (string, error) {
-	ctx := context.Background()
-
-	user, err := s.userDao.FindOneByUID(ctx, receiver)
+	user, err := s.userDao.FindOneByUID(s.ctx, receiver)
 	if err != nil {
 		return "", errors.NewError(code.InternalServerError, err)
 	}
@@ -45,7 +43,7 @@ func (s *Mail) Send(receiver int64, sender mailargs.Sender, mail mailargs.Mail) 
 	}
 
 	if sender.ID > 0 {
-		user, err = s.userDao.FindOneByUID(ctx, sender.ID)
+		user, err = s.userDao.FindOneByUID(s.ctx, sender.ID)
 		if err != nil {
 			return "", errors.NewError(code.InternalServerError, err)
 		}
@@ -83,7 +81,7 @@ func (s *Mail) Send(receiver int64, sender mailargs.Sender, mail mailargs.Mail) 
 		})
 	}
 
-	_, err = s.mailDao.InsertOne(ctx, model)
+	_, err = s.mailDao.InsertOne(s.ctx, model)
 	if err != nil {
 		return "", errors.NewError(code.InternalServerError, err)
 	}
@@ -110,7 +108,7 @@ func (s *Mail) Send(receiver int64, sender mailargs.Sender, mail mailargs.Mail) 
 			})
 		}
 
-		_ = s.proxy.Push(ctx, &node.PushArgs{
+		_ = s.proxy.Push(s.ctx, &node.PushArgs{
 			Kind:    session.User,
 			Target:  receiver,
 			Message: &node.Message{Route: route.NewMail, Data: data},
