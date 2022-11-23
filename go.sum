@@ -369,8 +369,8 @@ github.com/dgryski/go-sip13 v0.0.0-20181026042036-e10d5fee7954/go.mod h1:vAd38F8
 github.com/dlclark/regexp2 v1.4.1-0.20201116162257-a2a8dda75c91/go.mod h1:2pZnwuY/m+8K6iRw6wQdMtk+rH5tNGR1i55kozfMjCc=
 github.com/dnaeon/go-vcr v1.1.0/go.mod h1:M7tiix8f0r6mKKJ3Yq/kqU1OYf3MnfmBWVbPx/yU9ko=
 github.com/dnaeon/go-vcr v1.2.0/go.mod h1:R4UdLID7HZT3taECzJs4YgbbH6PIGXB6W/sc5OLb6RQ=
-github.com/dobyte/gen-mongo-dao v0.0.2 h1:Dd8ts2GRgxg6KpLcXD0uUTbUKjKcSvJlYwtTgvgVs04=
-github.com/dobyte/gen-mongo-dao v0.0.2/go.mod h1:tmGVLSq0rNjG9Wfqeh3CSHdk1rzW3r6LGeUlXyrkjHk=
+github.com/dobyte/gen-mongo-dao v0.0.4 h1:LKqa9a6jP+Pd3ZrGhUOdfCENj84D8d/fMJxbd0BuCgc=
+github.com/dobyte/gen-mongo-dao v0.0.4/go.mod h1:tmGVLSq0rNjG9Wfqeh3CSHdk1rzW3r6LGeUlXyrkjHk=
 github.com/dobyte/jwt v0.1.2 h1:7fFy7FLtvY9MrZBlxqfpdel3e0Jv6vhJTPOHC7TQZeE=
 github.com/dobyte/jwt v0.1.2/go.mod h1:z8piwmdtO0Vx2x96hXwqn1ZoALzxO4DgQDizqRyvJH4=
 github.com/docker/docker v1.6.2/go.mod h1:eEKB0N0r5NX/I1kEveEz05bcu8tLC/8azJZsviup8Sk=

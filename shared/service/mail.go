@@ -139,7 +139,7 @@ func (s *Mail) Delete(mailID string, isForce bool) error {
 		}
 	}
 
-	err = s.mailDao.DeleteOneByID(s.ctx, mailID)
+	_, err = s.mailDao.DeleteOneByID(s.ctx, mailID)
 	if err != nil {
 		return errors.NewError(code.InternalServerError, err)
 	}

@@ -23,4 +23,6 @@ func main() {
 	if err != nil {
 		log.Fatalf("generate code failed: %v", err)
 	}
+
+	log.Printf("generate code success")
 }

@@ -25,7 +25,7 @@ func TestMail_Send(t *testing.T) {
 func TestMail_Delete(t *testing.T) {
 	svc := service.NewMail(nil)
 
-	err := svc.Delete("637dfc7116fd1799bbc1a378", true)
+	err := svc.Delete("637e16d788457148afd53496", true)
 	if err != nil {
 		t.Fatal(err)
 	}
