@@ -9,7 +9,7 @@ require (
 	github.com/dobyte/due/registry/etcd v0.0.6
 	github.com/dobyte/due/transport/grpc v0.0.6
 	github.com/dobyte/gen-mongo-dao v0.0.4
-	github.com/dobyte/jwt v0.1.2
+	github.com/dobyte/jwt v0.1.3
 	github.com/gorilla/mux v1.8.0
 	go.mongodb.org/mongo-driver v1.11.0
 	golang.org/x/crypto v0.0.0-20220622213112-05595931fe9d

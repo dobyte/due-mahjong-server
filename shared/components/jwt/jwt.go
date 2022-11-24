@@ -9,19 +9,20 @@ import (
 
 var (
 	once     sync.Once
-	instance jwt.JWT
+	instance *jwt.JWT
 )
 
+type JWT = jwt.JWT
 type Payload = jwt.Payload
 
-// JWT 获取JWT
-func JWT() jwt.JWT {
+// Instance 获取JWT实例
+func Instance() *JWT {
 	once.Do(func() {
 		conf := &struct {
-			Issuer      string `json:"issuer"`
-			ExpiredTime int    `json:"expiredTime"`
-			SecretKey   string `json:"secretKey"`
-			IdentityKey string `json:"identityKey"`
+			Issuer        string `json:"issuer"`
+			ValidDuration int    `json:"validDuration"`
+			SecretKey     string `json:"secretKey"`
+			IdentityKey   string `json:"identityKey"`
 		}{}
 
 		err := config.Get("config.jwt").Scan(conf)
@@ -29,18 +30,12 @@ func JWT() jwt.JWT {
 			log.Fatalf("load jwt config failed: %v", err)
 		}
 
-		ins, err := jwt.NewJwt(&jwt.Options{
-			Issuer:      conf.Issuer,
-			ExpiredTime: conf.ExpiredTime,
-			SignMethod:  jwt.HS256,
-			SecretKey:   conf.SecretKey,
-			IdentityKey: conf.IdentityKey,
-		})
-		if err != nil {
-			log.Fatalf("jwt init failed: %v", err)
-		}
-
-		instance = ins
+		instance = jwt.NewJWT(
+			jwt.WithIssuer(conf.Issuer),
+			jwt.WithIdentityKey(conf.IdentityKey),
+			jwt.WithSecretKey(conf.SecretKey),
+			jwt.WithValidDuration(conf.ValidDuration),
+		)
 	})
 
 	return instance

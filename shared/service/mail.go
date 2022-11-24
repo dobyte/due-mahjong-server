@@ -16,16 +16,16 @@ import (
 )
 
 type Mail struct {
-	proxy   node.Proxy
 	ctx     context.Context
+	proxy   node.Proxy
 	userDao *userdao.User
 	mailDao *maildao.Mail
 }
 
 func NewMail(proxy node.Proxy) *Mail {
 	return &Mail{
-		proxy:   proxy,
 		ctx:     context.Background(),
+		proxy:   proxy,
 		userDao: userdao.NewUser(mongo.DB()),
 		mailDao: maildao.NewMail(mongo.DB()),
 	}
