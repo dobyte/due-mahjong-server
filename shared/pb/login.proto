@@ -29,7 +29,7 @@ enum LoginMode {
 // 用户登录请求
 message LoginReq {
   LoginMode Mode = 1; // 登录模式
-  optional string DeviceID = 2; // 设备ID
+  string DeviceID = 2; // 设备ID
   optional string Account = 3; // 账号
   optional string Password = 4; // 密码
   optional string Openid = 5; // openid

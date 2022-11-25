@@ -88,7 +88,7 @@ func (s *Mail) Send(receiver int64, sender mailargs.Sender, mail mailargs.Mail) 
 
 	if s.proxy != nil {
 		data := &mailpb.Mail{
-			ID:          model.ID.String(),
+			ID:          model.ID.Hex(),
 			Title:       model.Title,
 			Content:     model.Content,
 			Status:      mailpb.Status(model.Status),

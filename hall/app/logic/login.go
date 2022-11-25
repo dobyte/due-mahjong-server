@@ -9,6 +9,7 @@ import (
 	pb "due-mahjong-server/shared/pb/login"
 	"due-mahjong-server/shared/route"
 	"due-mahjong-server/shared/service"
+	mailargs "due-mahjong-server/shared/service/args/mail"
 	"github.com/dobyte/due/cluster/node"
 	"github.com/dobyte/due/errors"
 	"github.com/dobyte/due/log"
@@ -67,6 +68,11 @@ func (l *login) login(r node.Request) {
 		return
 	}
 
+	if req.GetDeviceID() == "" {
+		res.Code = pb.Code_IllegalParams
+		return
+	}
+
 	var uid int64
 	switch req.GetMode() {
 	case pb.LoginMode_Guest:
@@ -116,4 +122,16 @@ func (l *login) login(r node.Request) {
 
 	res.Code = pb.Code_OK
 	res.Token = token.Token
+
+	go func() {
+		_, err = service.NewMail(l.proxy).Send(uid, mailargs.Sender{
+			ID: -1,
+		}, mailargs.Mail{
+			Title:   "Welcome to mahjong world",
+			Content: "Hi, Dear player, Welcome to mahjong world",
+		})
+		if err != nil {
+			log.Errorf("send mail failed: %v", err)
+		}
+	}()
 }

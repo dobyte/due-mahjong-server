@@ -3,3 +3,6 @@
 .vscode
 deploy/
 hall/config/application_default_credentials.json
+hall/log/
+client/log/
+shared/service/log/
