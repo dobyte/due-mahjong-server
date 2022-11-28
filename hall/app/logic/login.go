@@ -3,13 +3,10 @@ package logic
 import (
 	"context"
 	"due-mahjong-server/shared/code"
-	"due-mahjong-server/shared/components/jwt"
-	"due-mahjong-server/shared/components/mongo"
-	dao "due-mahjong-server/shared/dao/user"
+	"due-mahjong-server/shared/pb/common"
 	pb "due-mahjong-server/shared/pb/login"
 	"due-mahjong-server/shared/route"
 	"due-mahjong-server/shared/service"
-	mailargs "due-mahjong-server/shared/service/args/mail"
 	"github.com/dobyte/due/cluster/node"
 	"github.com/dobyte/due/errors"
 	"github.com/dobyte/due/log"
@@ -18,8 +15,6 @@ import (
 type login struct {
 	proxy    node.Proxy
 	ctx      context.Context
-	jwt      *jwt.JWT
-	userDao  *dao.User
 	loginSvc *service.Login
 }
 
@@ -27,8 +22,6 @@ func NewLogin(proxy node.Proxy) *login {
 	return &login{
 		proxy:    proxy,
 		ctx:      context.Background(),
-		jwt:      jwt.Instance(),
-		userDao:  dao.NewUser(mongo.DB()),
 		loginSvc: service.NewLogin(proxy),
 	}
 }
@@ -57,19 +50,19 @@ func (l *login) login(r node.Request) {
 
 	if err := r.Parse(req); err != nil {
 		log.Errorf("invalid login message, err: %v", err)
-		res.Code = pb.Code_Abnormal
+		res.Code = common.Code_Abnormal
 		return
 	}
 
 	clientIP, err := r.GetIP()
 	if err != nil {
 		log.Errorf("get client ip failed, err: %v", err)
-		res.Code = pb.Code_Abnormal
+		res.Code = common.Code_Abnormal
 		return
 	}
 
 	if req.GetDeviceID() == "" {
-		res.Code = pb.Code_IllegalParams
+		res.Code = common.Code_IllegalParams
 		return
 	}
 
@@ -89,49 +82,35 @@ func (l *login) login(r node.Request) {
 		uid, err = l.loginSvc.TokenLogin(req.GetToken(), clientIP)
 	default:
 		log.Errorf("login failed, err: %v", err)
-		res.Code = pb.Code_IllegalParams
+		res.Code = common.Code_IllegalParams
 		return
 	}
 	if err != nil {
 		switch errors.Code(err) {
 		case code.NotFoundUser, code.WrongPassword:
-			res.Code = pb.Code_IncorrectAccountOrPassword
+			res.Code = common.Code_IncorrectAccountOrPassword
 		case code.TokenExpired:
-			res.Code = pb.Code_TokenExpired
+			res.Code = common.Code_TokenExpired
 		default:
-			res.Code = pb.Code_Failed
+			res.Code = common.Code_Failed
 		}
 		log.Errorf("login failed, err: %v", err)
 		return
 	}
 
-	token, err := l.jwt.GenerateToken(jwt.Payload{
-		l.jwt.IdentityKey(): uid,
-	})
-	if err != nil {
-		log.Errorf("token generate failed, err: %v", err)
-		res.Code = pb.Code_Failed
-		return
-	}
-
 	if err = r.BindGate(uid); err != nil {
 		log.Errorf("bind gate failed, err: %v", err)
-		res.Code = pb.Code_Failed
+		res.Code = common.Code_Failed
 		return
 	}
 
-	res.Code = pb.Code_OK
-	res.Token = token.Token
+	token, err := l.loginSvc.GenerateToken(uid)
+	if err != nil {
+		log.Errorf("token generate failed, err: %v", err)
+		res.Code = common.Code_Failed
+		return
+	}
 
-	go func() {
-		_, err = service.NewMail(l.proxy).Send(uid, mailargs.Sender{
-			ID: -1,
-		}, mailargs.Mail{
-			Title:   "Welcome to mahjong world",
-			Content: "Hi, Dear player, Welcome to mahjong world",
-		})
-		if err != nil {
-			log.Errorf("send mail failed: %v", err)
-		}
-	}()
+	res.Code = common.Code_OK
+	res.Token = token
 }

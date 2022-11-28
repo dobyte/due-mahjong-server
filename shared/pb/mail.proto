@@ -4,14 +4,7 @@ option go_package = "./pb/mail";
 
 package mail;
 
-// 返回码
-enum Code {
-  OK = 0; // 成功
-  Failed = 1; // 失败
-  Abnormal = 2; // 解析异常
-  IllegalParams = 3; // 参数非法
-  IncorrectAccountOrPassword = 4; // 账号或密码错误
-}
+import "code.proto";
 
 // 邮件状态
 enum Status {
@@ -28,7 +21,7 @@ message FetchListReq {
 
 // 拉取邮件列表响应
 message FetchListRes {
-  Code Code = 1; // 错误码
+  common.Code Code = 1; // 错误码
   bool HasMore = 2; // 是否还有更多
   repeated Mail List = 3; // 邮件列表
 }
@@ -59,10 +52,20 @@ message Attachment {
 
 // 读取邮件请求
 message ReadReq {
-  int64 MailID = 1; // 邮件ID
+  string MailID = 1; // 邮件ID
 }
 
 // 读取邮件响应
 message ReadRes {
-  Code Code = 1; // 错误码
+  common.Code Code = 1; // 错误码
+}
+
+// 删除邮件请求
+message DeleteReq {
+  string MailID = 1; // 邮件ID
+}
+
+// 删除邮件响应
+message DeleteRes {
+  common.Code Code = 1; // 错误码
 }

@@ -199,8 +199,8 @@ func (s *Login) doUpdateLoginRecord(id primitive.ObjectID, clientIP string) {
 	}
 }
 
-// 生成Token
-func (s *Login) doGenerateToken(uid int64) (string, error) {
+// GenerateToken 生成Token
+func (s *Login) GenerateToken(uid int64) (string, error) {
 	token, err := s.jwt.GenerateToken(jwt.Payload{
 		s.jwt.IdentityKey(): uid,
 	})

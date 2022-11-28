@@ -126,7 +126,7 @@ func (s *Mail) Delete(mailID string, isForce bool) error {
 	}
 
 	if mail == nil {
-		return nil
+		return errors.NewError(code.NotFoundMail)
 	}
 
 	if !isForce {

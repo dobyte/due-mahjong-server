@@ -4,15 +4,7 @@ option go_package = "./pb/login";
 
 package login;
 
-// 返回码
-enum Code {
-  OK = 0; // 成功
-  Failed = 1; // 失败
-  Abnormal = 2; // 解析异常
-  IllegalParams = 3; // 参数非法
-  IncorrectAccountOrPassword = 4; // 账号或密码错误
-  TokenExpired = 5; // Token已过期
-}
+import "code.proto";
 
 // 登录模式
 enum LoginMode {
@@ -40,11 +32,7 @@ message LoginReq {
 
 // 用户登录响应
 message LoginRes {
-  Code Code = 1; // 错误码
+  common.Code Code = 1; // 错误码
   string Token = 2; // TOKEN
-}
-
-message Login {
-
 }
 
