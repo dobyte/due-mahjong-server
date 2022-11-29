@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option go_package = "./pb/mail";
+option go_package = "due-mahjong-server/shared/pb/mail";
 
 package mail;
 
@@ -14,13 +14,13 @@ enum Status {
 }
 
 // 拉取邮件列表请求
-message FetchListReq {
+message FetchMailListReq {
   int32 Size = 1; // 每页大小
   int32 Page = 2; // 当前页
 }
 
 // 拉取邮件列表响应
-message FetchListRes {
+message FetchMailListRes {
   common.Code Code = 1; // 错误码
   bool HasMore = 2; // 是否还有更多
   repeated Mail List = 3; // 邮件列表
@@ -51,21 +51,41 @@ message Attachment {
 }
 
 // 读取邮件请求
-message ReadReq {
+message ReadMailReq {
   string MailID = 1; // 邮件ID
 }
 
 // 读取邮件响应
-message ReadRes {
+message ReadMailRes {
+  common.Code Code = 1; // 错误码
+}
+
+// 读取所有邮件请求
+message ReadAllMailReq {
+
+}
+
+// 读取所有邮件响应
+message ReadAllMailRes {
   common.Code Code = 1; // 错误码
 }
 
 // 删除邮件请求
-message DeleteReq {
+message DeleteMailReq {
   string MailID = 1; // 邮件ID
 }
 
 // 删除邮件响应
-message DeleteRes {
+message DeleteMailRes {
+  common.Code Code = 1; // 错误码
+}
+
+// 删除所有邮件请求
+message DeleteAllMailReq {
+
+}
+
+// 删除所有邮件响应
+message DeleteAllMailRes {
   common.Code Code = 1; // 错误码
 }

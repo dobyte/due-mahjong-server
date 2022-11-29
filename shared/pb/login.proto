@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option go_package = "./pb/login";
+option go_package = "due-mahjong-server/shared/pb/login";
 
 package login;
 

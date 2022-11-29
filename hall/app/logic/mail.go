@@ -30,9 +30,13 @@ func (l *mail) Init() {
 	// 拉取邮件列表
 	l.proxy.AddRouteHandler(route.FetchMailList, false, l.fetchList)
 	// 读取邮件
-	l.proxy.AddRouteHandler(route.ReadMail, false, l.read)
+	l.proxy.AddRouteHandler(route.ReadMail, false, l.readMail)
+	// 一键读取所有邮件
+	l.proxy.AddRouteHandler(route.ReadAllMail, false, l.readAllMail)
 	// 删除邮件
-	l.proxy.AddRouteHandler(route.DeleteMail, false, l.delete)
+	l.proxy.AddRouteHandler(route.DeleteMail, false, l.deleteMail)
+	// 删除所有邮件
+	l.proxy.AddRouteHandler(route.DeleteAllMail, false, l.deleteAllMail)
 }
 
 // 拉取邮件列表
@@ -41,14 +45,68 @@ func (l *mail) fetchList(r node.Request) {
 }
 
 // 读取邮件
-func (l *mail) read(r node.Request) {
+func (l *mail) readMail(r node.Request) {
+	req := &pb.ReadMailReq{}
+	res := &pb.ReadMailRes{}
+	defer func() {
+		if err := r.Response(res); err != nil {
+			log.Errorf("read mail response failed, err: %v", err)
+		}
+	}()
 
+	if err := r.Parse(req); err != nil {
+		log.Errorf("invalid read mail message, err: %v", err)
+		res.Code = common.Code_Abnormal
+		return
+	}
+
+	err := l.mailSvc.ReadMail(req.MailID, r.UID())
+	if err != nil {
+		switch errors.Code(err) {
+		case code.NoPermission:
+			res.Code = common.Code_NoPermission
+		case code.NotFoundMail:
+			res.Code = common.Code_NotFound
+		default:
+			res.Code = common.Code_Failed
+		}
+		log.Errorf("read mail failed, err: %v", err)
+		return
+	}
+
+	res.Code = common.Code_OK
+}
+
+// 一键读取所有邮件
+func (l *mail) readAllMail(r node.Request) {
+	res := &pb.ReadAllMailRes{}
+	defer func() {
+		if err := r.Response(res); err != nil {
+			log.Errorf("read all mail response failed, err: %v", err)
+		}
+	}()
+
+	err := l.mailSvc.ReadAllMail(r.UID())
+	if err != nil {
+		switch errors.Code(err) {
+		case code.NoPermission:
+			res.Code = common.Code_NoPermission
+		case code.NotFoundMail:
+			res.Code = common.Code_NotFound
+		default:
+			res.Code = common.Code_Failed
+		}
+		log.Errorf("read all mail failed, err: %v", err)
+		return
+	}
+
+	res.Code = common.Code_OK
 }
 
 // 删除邮件
-func (l *mail) delete(r node.Request) {
-	req := &pb.DeleteReq{}
-	res := &pb.DeleteRes{}
+func (l *mail) deleteMail(r node.Request) {
+	req := &pb.DeleteMailReq{}
+	res := &pb.DeleteMailRes{}
 	defer func() {
 		if err := r.Response(res); err != nil {
 			log.Errorf("delete mail response failed, err: %v", err)
@@ -61,7 +119,7 @@ func (l *mail) delete(r node.Request) {
 		return
 	}
 
-	err := l.mailSvc.Delete(req.MailID, false)
+	err := l.mailSvc.DeleteMail(req.MailID, r.UID(), false)
 	if err != nil {
 		switch errors.Code(err) {
 		case code.NotFoundMail:
@@ -72,6 +130,25 @@ func (l *mail) delete(r node.Request) {
 			res.Code = common.Code_Failed
 		}
 		log.Errorf("delete mail failed, err: %v", err)
+		return
+	}
+
+	res.Code = common.Code_OK
+}
+
+// 一键删除所有邮件
+func (l *mail) deleteAllMail(r node.Request) {
+	res := &pb.ReadAllMailRes{}
+	defer func() {
+		if err := r.Response(res); err != nil {
+			log.Errorf("read all mail response failed, err: %v", err)
+		}
+	}()
+
+	err := l.mailSvc.DeleteAllMail(r.UID(), false)
+	if err != nil {
+		res.Code = common.Code_Failed
+		log.Errorf("read all mail failed, err: %v", err)
 		return
 	}
 

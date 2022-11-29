@@ -37,6 +37,7 @@ func NewLogin(proxy node.Proxy) *Login {
 }
 
 // GuestLogin 来宾登录
+// code.InternalServerError
 func (s *Login) GuestLogin(deviceID string, clientIP string) (int64, error) {
 	user, err := s.userDao.FindOneByDeviceID(s.ctx, usermodel.TypeGuest, deviceID)
 	if err != nil {
@@ -61,6 +62,7 @@ func (s *Login) GuestLogin(deviceID string, clientIP string) (int64, error) {
 }
 
 // MobileLogin 手机号登录
+// code.InternalServerError
 func (s *Login) MobileLogin(mobile string, captcha string, clientIP string) (int64, error) {
 	user, err := s.userDao.FindOneByMobile(s.ctx, mobile)
 	if err != nil {
@@ -85,6 +87,9 @@ func (s *Login) MobileLogin(mobile string, captcha string, clientIP string) (int
 }
 
 // AccountLogin 账号登录
+// code.NotFoundUser
+// code.WrongPassword
+// code.InternalServerError
 func (s *Login) AccountLogin(account string, password string, clientIP string) (int64, error) {
 	var (
 		err  error
@@ -122,6 +127,8 @@ func (s *Login) AccountLogin(account string, password string, clientIP string) (
 }
 
 // TokenLogin TOKEN登录
+// code.TokenInvalid
+// code.TokenExpired
 func (s *Login) TokenLogin(token string, clientIP string) (int64, error) {
 	identity, err := s.jwt.ExtractIdentity(token)
 	if err != nil {
@@ -144,6 +151,7 @@ func (s *Login) WechatLogin(openid, deviceID, clientIP string) (int64, error) {
 }
 
 // GoogleLogin 谷歌登录
+// code.InternalServerError
 func (s *Login) GoogleLogin(idToken, deviceID, clientIP string) (int64, error) {
 	tokenInfo, err := google.OAuth2().Tokeninfo().IdToken(idToken).Do()
 	if err != nil {
@@ -174,6 +182,7 @@ func (s *Login) GoogleLogin(idToken, deviceID, clientIP string) (int64, error) {
 }
 
 // 创建用户
+// code.InternalServerError
 func (s *Login) doCreateUser(user *usermodel.User) error {
 	user.Coin = 100
 
@@ -200,6 +209,7 @@ func (s *Login) doUpdateLoginRecord(id primitive.ObjectID, clientIP string) {
 }
 
 // GenerateToken 生成Token
+// code.InternalServerError
 func (s *Login) GenerateToken(uid int64) (string, error) {
 	token, err := s.jwt.GenerateToken(jwt.Payload{
 		s.jwt.IdentityKey(): uid,

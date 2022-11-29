@@ -6,8 +6,10 @@ const (
 )
 
 const (
-	FetchMailList = 100 // 拉取邮件列表
-	ReadMail      = 101 // 读取邮件
-	NewMail       = 102 // 新邮件
-	DeleteMail    = 103 // 删除邮件
+	NewMail       = 101 // 新邮件
+	FetchMailList = 102 // 拉取邮件列表
+	ReadMail      = 103 // 读取邮件
+	ReadAllMail   = 104 // 一键读取所有邮件
+	DeleteMail    = 105 // 删除邮件
+	DeleteAllMail = 106 // 删除所有邮件
 )

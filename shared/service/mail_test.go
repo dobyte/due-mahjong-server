@@ -1,19 +1,24 @@
 package service_test
 
 import (
+	"due-mahjong-server/shared/consts"
 	"due-mahjong-server/shared/service"
 	mailargs "due-mahjong-server/shared/service/args/mail"
 	"testing"
 )
 
-func TestMail_Send(t *testing.T) {
-	svc := service.NewMail(nil)
+var svc = service.NewMail(nil)
 
-	mailID, err := svc.Send(1, mailargs.Sender{
+func TestMail_SendMail(t *testing.T) {
+	mailID, err := svc.SendMail(6, mailargs.Sender{
 		ID: -1,
 	}, mailargs.Mail{
 		Title:   "A Test Mail",
 		Content: "test mail content",
+		Attachments: []mailargs.Attachment{{
+			PropID:  1,
+			PropNum: 1,
+		}},
 	})
 	if err != nil {
 		t.Fatal(err)
@@ -22,10 +27,29 @@ func TestMail_Send(t *testing.T) {
 	t.Log(mailID)
 }
 
-func TestMail_Delete(t *testing.T) {
-	svc := service.NewMail(nil)
+func TestMail_ReadMail(t *testing.T) {
+	err := svc.ReadMail("6385ac192be5c1b0ca23a08c", 1)
+	if err != nil {
+		t.Fatal(err)
+	}
+}
 
-	err := svc.Delete("637e16d788457148afd53496", true)
+func TestMail_ReadAllMail(t *testing.T) {
+	err := svc.ReadAllMail(consts.Administrator)
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestMail_DeleteMail(t *testing.T) {
+	err := svc.DeleteMail("637e16d788457148afd53496", consts.Administrator, true)
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestMail_DeleteAllMail(t *testing.T) {
+	err := svc.DeleteAllMail(consts.Administrator, false)
 	if err != nil {
 		t.Fatal(err)
 	}
