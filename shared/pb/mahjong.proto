@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+option go_package = "due-mahjong-server/shared/pb/mahjong";
+
+package mahjong;
+
+import "code.proto";
+
+message FetchRoomsReq {
+
+}
+
+message QuickStartReq {
+
+}
+
+message QuickStartRes {
+  common.Code Code = 1; // 错误码
+}

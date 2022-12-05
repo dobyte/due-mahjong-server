@@ -13,3 +13,8 @@ const (
 	DeleteMail    = 105 // 删除邮件
 	DeleteAllMail = 106 // 删除所有邮件
 )
+
+const (
+	FetchRooms = 1000 // 拉取房间
+	QuickStart = 1001 // 快速开始
+)

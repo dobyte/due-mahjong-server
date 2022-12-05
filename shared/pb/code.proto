@@ -14,4 +14,5 @@ enum Code {
   TokenExpired = 5; // Token已过期
   NoPermission = 6; // 没有操作权限
   NotFound = 7; // 未找到资源
+  NotLogin = 8; // 未登录
 }

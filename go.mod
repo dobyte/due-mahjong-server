@@ -3,11 +3,11 @@ module due-mahjong-server
 go 1.16
 
 require (
-	github.com/dobyte/due v0.0.6
-	github.com/dobyte/due/locate/redis v0.0.6
-	github.com/dobyte/due/network/ws v0.0.6
-	github.com/dobyte/due/registry/etcd v0.0.6
-	github.com/dobyte/due/transport/grpc v0.0.6
+	github.com/dobyte/due v0.0.7
+	github.com/dobyte/due/locate/redis v0.0.7
+	github.com/dobyte/due/network/ws v0.0.7
+	github.com/dobyte/due/registry/etcd v0.0.7
+	github.com/dobyte/due/transport/grpc v0.0.7
 	github.com/dobyte/gen-mongo-dao v0.0.5
 	github.com/dobyte/jwt v0.1.3
 	github.com/gorilla/mux v1.8.0
