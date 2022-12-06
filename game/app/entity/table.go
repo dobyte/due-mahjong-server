@@ -7,12 +7,13 @@ import (
 )
 
 type Table struct {
-	id int
+	id   int
+	room *Room
 
 	rw           sync.RWMutex
-	room         *Room
 	seats        []*Seat
 	totalPlayers int
+	totalReadies int
 }
 
 func newTable(id int, room *Room) *Table {
@@ -23,22 +24,52 @@ func newTable(id int, room *Room) *Table {
 	}
 
 	for i := 0; i < room.opts.TotalSeats; i++ {
-		t.seats[i] = newSeat(i, t)
+		t.seats[i] = newSeat(i+1, t)
 	}
 
 	return t
 }
 
+// ID 获取牌桌ID
+func (t *Table) ID() int {
+	return t.id
+}
+
+// Room 获取牌桌所属房间
+func (t *Table) Room() *Room {
+	return t.room
+}
+
+// Seats 获取牌桌所有位置
+func (t *Table) Seats() []*Seat {
+	return t.seats
+}
+
+// Reset 重置牌桌
+func (t *Table) Reset() {
+	t.rw.Lock()
+	defer t.rw.Unlock()
+
+	for i := range t.seats {
+		t.seats[i].Reset()
+	}
+
+	t.totalPlayers = 0
+}
+
 // GetSeat 获取座位
+// code.IllegalParams
 func (t *Table) GetSeat(seatID int) (*Seat, error) {
 	t.rw.RLock()
 	defer t.rw.RUnlock()
 
-	if seatID <= 0 || seatID >= len(t.seats) {
+	sid := seatID - 1
+
+	if sid < 0 || sid >= len(t.seats) {
 		return nil, errors.NewError(code.IllegalParams)
 	}
 
-	return t.seats[seatID-1], nil
+	return t.seats[sid], nil
 }
 
 // AddPlayer 把玩家加入牌桌
@@ -50,82 +81,85 @@ func (t *Table) AddPlayer(player *Player, seatID ...int) error {
 	t.rw.Lock()
 	defer t.rw.Unlock()
 
-	sid := -1
 	if len(seatID) > 0 {
-		sid = seatID[0] - 1
+		sid := seatID[0] - 1
 
 		if sid < 0 || sid >= len(t.seats) {
 			return errors.NewError(code.IllegalParams)
 		}
-	} else {
-		for n, seat := range t.seats {
-			if !seat.HasPlayer() {
-				sid = n
-				break
-			}
+
+		err := t.seats[sid].AddPlayer(player)
+		if err != nil {
+			return err
 		}
 
-		if sid < 0 {
-			return errors.NewError(code.TableIsFull)
+		t.totalPlayers++
+
+		return nil
+	}
+
+	for _, seat := range t.seats {
+		if seat.AddPlayer(player) == nil {
+			t.totalPlayers++
+			return nil
 		}
 	}
 
-	err := t.seats[sid].AddPlayer(player)
+	return errors.NewError(code.TableIsFull)
+}
+
+// RemPlayer 移除玩家
+// code.IllegalParams
+// code.SeatIsEmpty
+// code.PlayerNotInSeat
+func (t *Table) RemPlayer(seatID int) error {
+	t.rw.Lock()
+	defer t.rw.Unlock()
+
+	sid := seatID - 1
+
+	if sid < 0 || sid >= len(t.seats) {
+		return errors.NewError(code.IllegalParams)
+	}
+
+	err := t.seats[sid].RemPlayer()
 	if err != nil {
 		return err
 	}
 
-	t.totalPlayers++
-
-	return nil
-}
-
-// RemoveFromSeat 把玩家从座位上移除
-// code.IllegalParams
-// code.SeatIsEmpty
-func (t *Table) RemoveFromSeat(seatID int) error {
-	t.rw.Lock()
-	defer t.rw.Unlock()
-
-	if seatID < 0 || seatID >= len(t.seats) {
-		return errors.NewError(code.IllegalParams)
-	}
-
-	if t.seats[seatID] == nil {
-		return errors.NewError(code.SeatIsEmpty)
-	}
-
-	t.seats[seatID] = nil
 	t.totalPlayers--
 
 	return nil
 }
 
-// Reset 重置牌桌
-func (t *Table) Reset() {
-	t.rw.Lock()
-	defer t.rw.Unlock()
-
-	if t.room != nil && !t.room.fixed {
-		t.room = nil
-	}
-
-	for i := range t.seats {
-		t.seats[i].Reset()
-	}
-
-	t.seats = make([]*Seat, len(t.seats))
-	t.totalPlayers = 0
-}
-
-// Room 获取牌桌所属房间
-func (t *Table) Room() *Room {
+// HasPlayer 检测桌子上是否有玩家
+func (t *Table) HasPlayer() bool {
 	t.rw.RLock()
 	defer t.rw.RUnlock()
 
-	return t.room
+	return t.totalPlayers > 0
 }
 
+// QuickMatch 快速匹配
 func (t *Table) QuickMatch(player *Player) error {
+	t.rw.Lock()
+	defer t.rw.Unlock()
+
+	if len(t.seats) == t.totalPlayers {
+		return errors.NewError(code.TableIsFull)
+	}
+
+	if t.totalPlayers == 0 {
+		return errors.NewError(code.TableIsEmpty)
+	}
+
+	for _, seat := range t.seats {
+		if seat.AddPlayer(player) == nil {
+			t.totalPlayers++
+			t.totalReadies++
+			break
+		}
+	}
+
 	return nil
 }

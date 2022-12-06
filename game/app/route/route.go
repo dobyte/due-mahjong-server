@@ -6,5 +6,8 @@ import (
 )
 
 func Init(proxy node.Proxy) {
+	// 麻将逻辑
 	logic.NewMahjong(proxy).Init()
+	// 德州逻辑
+	logic.NewTexas(proxy).Init()
 }

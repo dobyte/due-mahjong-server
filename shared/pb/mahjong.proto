@@ -5,6 +5,8 @@ option go_package = "due-mahjong-server/shared/pb/mahjong";
 package mahjong;
 
 import "code.proto";
+import "common.proto";
+
 
 message FetchRoomsReq {
 
@@ -16,4 +18,42 @@ message QuickStartReq {
 
 message QuickStartRes {
   common.Code Code = 1; // 错误码
+  GameInfo GameInfo = 2; // 游戏信息
+}
+
+message GameInfo {
+  Room Room = 1; // 房间
+  Table Table = 2; // 牌桌
+}
+
+message Room {
+  int32 ID = 1; // 房间ID
+  string Name = 2; // 房间名称
+  int32 MinEntryLimit = 3; // 最小进入限制
+  int32 MaxEntryLimit = 4; // 最大进入限制
+}
+
+message Table {
+  int32 ID = 1; // 牌桌ID
+  repeated Seat Seats = 2; // 座位信息
+}
+
+message Seat {
+  int32 ID = 1; // 座位ID
+  Player Player = 2; // 玩家信息
+}
+
+message Player {
+  common.User User = 1; // 用户
+  bool IsMyself = 2; // 是否是自己
+}
+
+// 离线通知
+message OfflineNotify {
+  int32 SeatID = 1; // 座位ID
+}
+
+// 上线通知
+message OnlineNotify {
+  int32 SeatID = 1; // 座位ID
 }

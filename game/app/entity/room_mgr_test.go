@@ -16,7 +16,7 @@ func TestNewRoomMgr(t *testing.T) {
 }
 
 func TestRoomMgr_QuickMatch(t *testing.T) {
-	player, err := playerMgr.LoadPlayer(1)
+	player, err := playerMgr.LoadPlayer(6)
 	if err != nil {
 		t.Fatalf("load player failed: %v", err)
 	}
@@ -25,4 +25,8 @@ func TestRoomMgr_QuickMatch(t *testing.T) {
 	if err != nil {
 		t.Fatalf("quick match failed: %v", err)
 	}
+
+	t.Logf("room id: %d", player.Room().ID())
+	t.Logf("table id: %d", player.Table().ID())
+	t.Logf("seat id: %d", player.Seat().ID())
 }

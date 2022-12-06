@@ -8,18 +8,18 @@ import (
 )
 
 type Player struct {
-	user           *user.User
-	coinInitAmount int
+	user     *user.User
+	initCoin int
 
-	rw             sync.RWMutex
-	seat           *Seat
-	coinIncrAmount int
+	rw       sync.RWMutex
+	seat     *Seat
+	incrCoin int
 }
 
 func newPlayer(user *user.User) *Player {
 	return &Player{
-		user:           user,
-		coinInitAmount: user.Coin,
+		user:     user,
+		initCoin: user.Coin,
 	}
 }
 
@@ -30,6 +30,11 @@ func (p *Player) Reset() {
 
 	p.syncToDB()
 	p.seat = nil
+}
+
+// UID 获取用户ID
+func (p *Player) UID() int64 {
+	return p.user.UID
 }
 
 // User 获取用户
@@ -44,7 +49,7 @@ func (p *Player) Coin() int {
 	p.rw.RLock()
 	defer p.rw.RUnlock()
 
-	return p.coinInitAmount + p.coinIncrAmount
+	return p.initCoin + p.incrCoin
 }
 
 // Seat 获取玩家所属座位
@@ -94,6 +99,21 @@ func (p *Player) AddSeat(seat *Seat) error {
 	return nil
 }
 
+// RemSeat 移除玩家座位
+// code.PlayerNotInSeat
+func (p *Player) RemSeat() error {
+	p.rw.Lock()
+	defer p.rw.Unlock()
+
+	if p.seat == nil {
+		return errors.NewError(code.PlayerNotInSeat)
+	}
+
+	p.seat = nil
+
+	return nil
+}
+
 // IncrCoin 增加金币
 func (p *Player) IncrCoin(incr int) {
 	if incr == 0 {
@@ -103,7 +123,7 @@ func (p *Player) IncrCoin(incr int) {
 	p.rw.Lock()
 	defer p.rw.Unlock()
 
-	p.coinIncrAmount += incr
+	p.incrCoin += incr
 }
 
 // DecrCoin 扣减金币
@@ -120,16 +140,16 @@ func (p *Player) SyncToDB() {
 }
 
 func (p *Player) syncToDB() {
-	if p.coinIncrAmount == 0 {
+	if p.incrCoin == 0 {
 		return
 	}
 
 	// TODO: 同步到数据库
 	go func(coin int) {
 
-	}(p.coinIncrAmount)
+	}(p.incrCoin)
 
-	p.coinInitAmount += p.coinIncrAmount
-	p.coinIncrAmount = 0
-	p.user.Coin = p.coinInitAmount
+	p.initCoin += p.incrCoin
+	p.incrCoin = 0
+	p.user.Coin = p.initCoin
 }

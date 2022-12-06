@@ -6,7 +6,8 @@
     "maxEntryLimit": 1000,
     "feeRate": 10,
     "totalTables": 100,
-    "totalSeats": 4
+    "totalSeats": 4,
+    "autoReady": false
   }
 ]
 

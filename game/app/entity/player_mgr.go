@@ -1,8 +1,15 @@
 package entity
 
 import (
+	"due-mahjong-server/shared/code"
 	"due-mahjong-server/shared/service"
+	"github.com/dobyte/due/errors"
 	"sync"
+)
+
+var (
+	playerMgrOnce     sync.Once
+	playerMgrInstance *PlayerMgr
 )
 
 type PlayerMgr struct {
@@ -13,16 +20,24 @@ type PlayerMgr struct {
 }
 
 func NewPlayerMgr() *PlayerMgr {
-	return &PlayerMgr{
-		userSvc: service.NewUser(nil),
-		players: make(map[int64]*Player),
-	}
+	playerMgrOnce.Do(func() {
+		playerMgrInstance = &PlayerMgr{
+			userSvc: service.NewUser(nil),
+			players: make(map[int64]*Player),
+		}
+	})
+	return playerMgrInstance
 }
 
 // LoadPlayer 加载玩家
 // code.NotFoundUser
 // code.InternalServerError
 func (mgr *PlayerMgr) LoadPlayer(uid int64) (*Player, error) {
+	player, ok := mgr.players[uid]
+	if ok {
+		return player, nil
+	}
+
 	user, err := mgr.userSvc.GetUser(uid)
 	if err != nil {
 		return nil, err
@@ -31,7 +46,7 @@ func (mgr *PlayerMgr) LoadPlayer(uid int64) (*Player, error) {
 	mgr.rw.Lock()
 	defer mgr.rw.Unlock()
 
-	player := newPlayer(user)
+	player = newPlayer(user)
 	mgr.players[uid] = player
 
 	return player, nil
@@ -50,4 +65,18 @@ func (mgr *PlayerMgr) UnloadPlayer(uid int64) {
 	player.Reset()
 
 	delete(mgr.players, uid)
+}
+
+// GetPlayer 获取玩家
+// code.NotFoundPlayer
+func (mgr *PlayerMgr) GetPlayer(uid int64) (*Player, error) {
+	mgr.rw.RLock()
+	defer mgr.rw.RUnlock()
+
+	player, ok := mgr.players[uid]
+	if !ok {
+		return nil, errors.NewError(code.NotFoundPlayer)
+	}
+
+	return player, nil
 }

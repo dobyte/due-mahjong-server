@@ -12,7 +12,7 @@ type RoomMgr struct {
 }
 
 func NewRoomMgr() *RoomMgr {
-	opts := make([]*RoomOptions, 0, 0)
+	opts := make([]*RoomOptions, 0)
 
 	err := config.Get("rooms").Scan(&opts)
 	if err != nil {
@@ -66,10 +66,6 @@ func (mgr *RoomMgr) GetSeat(roomID, tableID, seatID int) (*Seat, error) {
 
 // QuickMatch 快速匹配
 // code.NoMatchingRoom
-// code.IllegalParams
-// code.TableIsFull
-// code.SeatAlreadyTaken
-// code.PlayerAlreadySeated
 func (mgr *RoomMgr) QuickMatch(player *Player) error {
 	for _, room := range mgr.rooms {
 		if room.QuickMatch(player) == nil {

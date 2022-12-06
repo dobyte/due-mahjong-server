@@ -22,6 +22,7 @@ type RoomOptions struct {
 	MaxEntryLimit int    `json:"maxEntryLimit"` // 最高进入限制
 	TotalTables   int    `json:"totalTables"`   // 房间总的牌桌数，为0时则为动态牌桌
 	TotalSeats    int    `json:"totalSeats"`    // 牌桌总的座位数
+	AutoReady     bool   `json:"autoReady"`     // 自动准备
 }
 
 func newRoom(opts *RoomOptions) *Room {
@@ -167,9 +168,20 @@ func (r *Room) QuickMatch(player *Player) error {
 		}
 	}
 
+	for _, table := range r.tables {
+		if table.AddPlayer(player) == nil {
+			return nil
+		}
+	}
+
 	if r.fixed {
 		return errors.NewError(code.NoMatchingTable)
 	}
 
 	return r.createTable().AddPlayer(player)
+}
+
+// IsAutoReady 检测是否自动准备
+func (r *Room) IsAutoReady() bool {
+	return r.opts.AutoReady
 }
