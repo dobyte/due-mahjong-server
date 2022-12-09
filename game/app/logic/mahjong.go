@@ -3,12 +3,14 @@ package logic
 import (
 	"context"
 	"due-mahjong-server/game/app/entity"
+	"due-mahjong-server/shared/code"
 	"due-mahjong-server/shared/pb/common"
 	pb "due-mahjong-server/shared/pb/mahjong"
 	"due-mahjong-server/shared/route"
 	"github.com/dobyte/due/cluster"
 	"github.com/dobyte/due/cluster/node"
 	"github.com/dobyte/due/config"
+	"github.com/dobyte/due/errors"
 	"github.com/dobyte/due/log"
 	"github.com/dobyte/due/session"
 )
@@ -66,7 +68,7 @@ func (l *mahjong) disconnect(_ string, uid int64) {
 
 	seat.Offline()
 
-	l.syncSeatState(player, pb.SeatState_Offline)
+	l.syncSeatStateChange(seat, pb.SeatState_Offline)
 }
 
 // 重新连接
@@ -83,7 +85,7 @@ func (l *mahjong) reconnect(_ string, uid int64) {
 
 	seat.Online()
 
-	l.syncSeatState(player, pb.SeatState_Online)
+	l.syncSeatStateChange(seat, pb.SeatState_Online)
 }
 
 // 快速开始
@@ -125,7 +127,7 @@ func (l *mahjong) quickStart(r node.Request) {
 		return
 	}
 
-	l.syncSeatState(player, pb.SeatState_SitDown)
+	l.syncTakeSeatInfo(player.Seat())
 
 	res.Code = common.Code_OK
 	res.GameInfo = l.makeGameInfo(player)
@@ -146,13 +148,7 @@ func (l *mahjong) sitDown(r node.Request) {
 		return
 	}
 
-	if err := r.Parse(req); err != nil {
-		log.Errorf("invalid sit down message, err: %v", err)
-		res.Code = common.Code_Abnormal
-		return
-	}
-
-	player, err := l.playerMgr.GetPlayer(r.UID())
+	player, err := l.playerMgr.LoadPlayer(r.UID())
 	if err != nil {
 		res.Code = common.Code_IllegalOperation
 		return
@@ -164,6 +160,35 @@ func (l *mahjong) sitDown(r node.Request) {
 		return
 	}
 
+	if err = r.Parse(req); err != nil {
+		log.Errorf("invalid sit down message, err: %v", err)
+		res.Code = common.Code_Abnormal
+		return
+	}
+
+	seat, err = l.roomMgr.GetSeat(int(req.RoomID), int(req.TableID), int(req.SeatID))
+	if err != nil {
+		res.Code = common.Code_IllegalParams
+		return
+	}
+
+	err = seat.AddPlayer(player)
+	if err != nil {
+		switch errors.Code(err) {
+		case code.SeatAlreadyTaken:
+			res.Code = common.Code_SeatAlreadyTaken
+		case code.PlayerAlreadySeated:
+			res.Code = common.Code_IllegalOperation
+		default:
+			res.Code = common.Code_Failed
+		}
+		return
+	}
+
+	l.syncTakeSeatInfo(seat)
+
+	res.Code = common.Code_OK
+	res.GameInfo = l.makeGameInfo(player)
 }
 
 // 站起
@@ -198,7 +223,7 @@ func (l *mahjong) standUp(r node.Request) {
 		return
 	}
 
-	l.syncSeatState(player, pb.SeatState_StandUp)
+	l.syncSeatStateChange(seat, pb.SeatState_StandUp)
 
 	res.Code = common.Code_OK
 }
@@ -236,7 +261,7 @@ func (l *mahjong) ready(r node.Request) {
 
 	seat.Ready()
 
-	l.syncSeatState(player, pb.SeatState_Ready)
+	l.syncSeatStateChange(seat, pb.SeatState_Ready)
 
 	res.Code = common.Code_OK
 }
@@ -274,28 +299,27 @@ func (l *mahjong) unready(r node.Request) {
 
 	seat.Unready()
 
-	l.syncSeatState(player, pb.SeatState_Unready)
+	l.syncSeatStateChange(seat, pb.SeatState_Unready)
 
 	res.Code = common.Code_OK
 }
 
 // 同步玩家座位状态
-func (l *mahjong) syncSeatState(player *entity.Player, state pb.SeatState) {
-	seat := player.Seat()
+func (l *mahjong) syncSeatStateChange(seat *entity.Seat, state pb.SeatState) {
 	seats := seat.Table().Seats()
 	targets := make([]int64, 0, len(seats))
 
 	for _, s := range seats {
+		if s.ID() == seat.ID() {
+			continue
+		}
+
 		if s.IsOffline() {
 			continue
 		}
 
 		p := s.Player()
 		if p == nil {
-			continue
-		}
-
-		if p.UID() == player.UID() {
 			continue
 		}
 
@@ -306,27 +330,68 @@ func (l *mahjong) syncSeatState(player *entity.Player, state pb.SeatState) {
 		return
 	}
 
-	data := &pb.SeatStateNotify{
-		SeatID:    int32(seat.ID()),
-		SeatState: state,
+	_, _ = l.proxy.Multicast(l.ctx, &node.MulticastArgs{
+		Kind:    session.User,
+		Targets: targets,
+		Message: &node.Message{
+			Route: route.SeatStateChange,
+			Data: &pb.SeatStateChangeNotify{
+				SeatID:    int32(seat.ID()),
+				SeatState: state,
+			},
+		},
+	})
+}
+
+// 同步玩家座位信息
+func (l *mahjong) syncTakeSeatInfo(seat *entity.Seat) {
+	seats := seat.Table().Seats()
+	targets := make([]int64, 0, len(seats))
+
+	for _, s := range seats {
+		if s.ID() == seat.ID() {
+			continue
+		}
+
+		if s.IsOffline() {
+			continue
+		}
+
+		p := s.Player()
+		if p == nil {
+			continue
+		}
+
+		targets = append(targets, p.UID())
 	}
 
-	if state == pb.SeatState_SitDown {
-		data.Player = &pb.Player{User: l.makeUserInfo(player)}
+	if len(targets) == 0 {
+		return
 	}
 
 	_, _ = l.proxy.Multicast(l.ctx, &node.MulticastArgs{
 		Kind:    session.User,
 		Targets: targets,
 		Message: &node.Message{
-			Route: route.SeatState,
-			Data:  data,
+			Route: route.TakeSeat,
+			Data: &pb.TakeSeatNotify{
+				Seat: &pb.Seat{
+					ID:       int32(seat.ID()),
+					IsOnline: seat.IsOnline(),
+					IsReady:  seat.IsReady(),
+					Player:   &pb.Player{User: l.makeUserInfo(seat.Player())},
+				},
+			},
 		},
 	})
 }
 
 // 根据玩家生成用户信息
 func (l *mahjong) makeUserInfo(player *entity.Player) *common.User {
+	if player == nil {
+		return nil
+	}
+
 	u := player.User()
 
 	return &common.User{
@@ -367,7 +432,9 @@ func (l *mahjong) makeGameInfo(player *entity.Player) *pb.GameInfo {
 
 	for i, seat := range seats {
 		info.Table.Seats[i] = &pb.Seat{
-			ID: int32(seat.ID()),
+			ID:       int32(seat.ID()),
+			IsOnline: seat.IsOnline(),
+			IsReady:  seat.IsReady(),
 		}
 
 		p := seat.Player()

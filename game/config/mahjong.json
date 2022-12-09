@@ -8,7 +8,8 @@
       "feeRate": 10,
       "totalTables": 100,
       "totalSeats": 4,
-      "autoReady": false
+      "autoReady": false,
+      "autoStart": false
     }
   ]
 }

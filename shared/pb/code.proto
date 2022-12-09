@@ -16,4 +16,5 @@ enum Code {
   NotFound = 7; // 未找到资源
   NotLogin = 8; // 未登录
   IllegalOperation = 9; // 非法操作
+  SeatAlreadyTaken = 10; // 座位被占用
 }

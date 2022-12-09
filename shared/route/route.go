@@ -15,14 +15,12 @@ const (
 )
 
 const (
-	FetchRooms = 1000 // 拉取房间
-	QuickStart = 1001 // 快速开始
-	SitDown    = 1002 // 坐下
-	StandUp    = 1003 // 站起
-	Ready      = 1004 // 开始准备
-	Unready    = 1005 // 取消准备
-	SeatState  = 1006 // 状态变更
-
-	Offline = 1006 // 玩家离线
-	Online  = 1007 // 玩家上线
+	FetchRooms      = 1000 // 拉取房间
+	QuickStart      = 1001 // 快速开始
+	SitDown         = 1002 // 坐下
+	StandUp         = 1003 // 站起
+	Ready           = 1004 // 开始准备
+	Unready         = 1005 // 取消准备
+	SeatStateChange = 1006 // 状态变更
+	TakeSeat        = 1007 // 入座通知
 )

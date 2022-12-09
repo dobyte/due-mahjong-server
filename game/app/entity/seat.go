@@ -8,11 +8,16 @@ import (
 	"sync/atomic"
 )
 
+const (
+	online  = 1 // 在线
+	offline = 0 // 离线
+)
+
 type Seat struct {
 	ctx    context.Context
 	id     int
 	table  *Table
-	online int32 // 在线状态，0：离线 1：在线
+	online int32
 
 	rw     sync.RWMutex
 	player *Player // 玩家
@@ -33,11 +38,11 @@ func (s *Seat) Reset() {
 
 	if s.player != nil {
 		s.player.Reset()
-		s.player = nil
 	}
 
-	s.online = 0
+	s.player = nil
 	s.ready = false
+	s.Offline()
 }
 
 // ID 获取座位ID
@@ -80,6 +85,7 @@ func (s *Seat) AddPlayer(player *Player) error {
 	}
 
 	s.player = player
+	s.Online()
 
 	if s.Table().Room().IsAutoReady() {
 		s.ready = true
@@ -110,6 +116,7 @@ func (s *Seat) RemPlayer() error {
 	}
 
 	s.player = nil
+	s.Offline()
 
 	return nil
 }
@@ -124,22 +131,22 @@ func (s *Seat) HasPlayer() bool {
 
 // IsOffline 检测座位上的玩家是否离线
 func (s *Seat) IsOffline() bool {
-	return atomic.LoadInt32(&s.online) == 0
+	return atomic.LoadInt32(&s.online) == offline
 }
 
 // IsOnline 检测座位上的玩家是否在线
 func (s *Seat) IsOnline() bool {
-	return atomic.LoadInt32(&s.online) == 1
+	return atomic.LoadInt32(&s.online) == online
 }
 
 // Offline 标记座位上的玩家离线
 func (s *Seat) Offline() {
-	atomic.StoreInt32(&s.online, 1)
+	atomic.StoreInt32(&s.online, offline)
 }
 
 // Online 标记座位上的玩家上线
 func (s *Seat) Online() {
-	atomic.StoreInt32(&s.online, 1)
+	atomic.StoreInt32(&s.online, online)
 }
 
 // Ready 准备

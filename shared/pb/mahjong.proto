@@ -11,10 +11,9 @@ enum SeatState {
   None = 0; // 无效
   Offline = 1; // 离线
   Online = 2; // 上线
-  SitDown = 3; // 坐下
-  StandUp = 4; // 起立
-  Ready = 5; // 准备
-  Unready = 6; // 取消准备
+  StandUp = 3; // 起立
+  Ready = 4; // 准备
+  Unready = 5; // 取消准备
 }
 
 // 快速开始响应
@@ -87,8 +86,12 @@ message Player {
 }
 
 // 玩家座位状态变更通知
-message SeatStateNotify {
+message SeatStateChangeNotify {
   int32 SeatID = 1; // 座位ID
   SeatState SeatState = 2; // 座位状态
-  Player Player = 3; // 玩家信息，仅在坐下时有玩家信息
+}
+
+// 玩家入座通知
+message TakeSeatNotify {
+  Seat Seat = 1; // 座位信息
 }
