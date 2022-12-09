@@ -111,6 +111,12 @@ func (l *mahjong) quickStart(r node.Request) {
 		return
 	}
 
+	seat := player.Seat()
+	if seat != nil {
+		res.Code = common.Code_IllegalOperation
+		return
+	}
+
 	defer func() {
 		if err != nil {
 			l.playerMgr.UnloadPlayer(r.UID())
