@@ -95,3 +95,8 @@ message SeatStateChangeNotify {
 message TakeSeatNotify {
   Seat Seat = 1; // 座位信息
 }
+
+// 游戏信息通知
+message GameInfoNotify {
+  GameInfo GameInfo = 1; // 游戏信息
+}

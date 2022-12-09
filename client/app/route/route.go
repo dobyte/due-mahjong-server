@@ -10,4 +10,6 @@ func Init(proxy client.Proxy) {
 	logic.NewLogin(proxy).Init()
 	// 邮件逻辑
 	logic.NewMail(proxy).Init()
+	// 麻将逻辑
+	logic.NewMahjong(proxy).Init()
 }

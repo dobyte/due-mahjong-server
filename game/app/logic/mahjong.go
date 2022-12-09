@@ -86,6 +86,8 @@ func (l *mahjong) reconnect(_ string, uid int64) {
 	seat.Online()
 
 	l.syncSeatStateChange(seat, pb.SeatState_Online)
+
+	l.syncGameInfo(player)
 }
 
 // 快速开始
@@ -236,6 +238,11 @@ func (l *mahjong) standUp(r node.Request) {
 		return
 	}
 
+	err = r.UnbindNode()
+	if err != nil {
+		log.Errorf("unbind node failed: uid: %d err: %v", r.UID(), err)
+	}
+
 	l.syncSeatStateChange(seat, pb.SeatState_StandUp)
 
 	res.Code = common.Code_OK
@@ -317,6 +324,23 @@ func (l *mahjong) unready(r node.Request) {
 	res.Code = common.Code_OK
 }
 
+// 同步游戏信息
+func (l *mahjong) syncGameInfo(player *entity.Player) {
+	err := l.proxy.Push(l.ctx, &node.PushArgs{
+		Kind:   session.User,
+		Target: player.UID(),
+		Message: &node.Message{
+			Route: route.GameInfoNotify,
+			Data: &pb.GameInfoNotify{
+				GameInfo: l.makeGameInfo(player),
+			},
+		},
+	})
+	if err != nil {
+		log.Errorf("game info notify push failed: %v", err)
+	}
+}
+
 // 同步玩家座位状态
 func (l *mahjong) syncSeatStateChange(seat *entity.Seat, state pb.SeatState) {
 	seats := seat.Table().Seats()
@@ -343,7 +367,7 @@ func (l *mahjong) syncSeatStateChange(seat *entity.Seat, state pb.SeatState) {
 		return
 	}
 
-	_, _ = l.proxy.Multicast(l.ctx, &node.MulticastArgs{
+	_, err := l.proxy.Multicast(l.ctx, &node.MulticastArgs{
 		Kind:    session.User,
 		Targets: targets,
 		Message: &node.Message{
@@ -354,6 +378,9 @@ func (l *mahjong) syncSeatStateChange(seat *entity.Seat, state pb.SeatState) {
 			},
 		},
 	})
+	if err != nil {
+		log.Errorf("seat state change notify multicast failed: %v", err)
+	}
 }
 
 // 同步玩家座位信息

@@ -23,4 +23,5 @@ const (
 	Unready         = 1005 // 取消准备
 	SeatStateChange = 1006 // 状态变更
 	TakeSeat        = 1007 // 入座通知
+	GameInfoNotify  = 1008 // 游戏信息通知
 )

@@ -2,7 +2,8 @@ package logic
 
 import (
 	"due-mahjong-server/client/app/store"
-	pb "due-mahjong-server/shared/pb/login"
+	commonpb "due-mahjong-server/shared/pb/common"
+	loginpb "due-mahjong-server/shared/pb/login"
 	"due-mahjong-server/shared/route"
 	"github.com/dobyte/due/cluster/client"
 	"github.com/dobyte/due/log"
@@ -30,7 +31,7 @@ func (l *login) register(r client.Request) {
 
 // 用户登录
 func (l *login) login(r client.Request) {
-	res := &pb.LoginRes{}
+	res := &loginpb.LoginRes{}
 
 	err := r.Parse(res)
 	if err != nil {
@@ -38,7 +39,7 @@ func (l *login) login(r client.Request) {
 		return
 	}
 
-	if res.Code != pb.Code_OK {
+	if res.Code != commonpb.Code_OK {
 		log.Warnf("%+v", res)
 		return
 	}
@@ -46,4 +47,9 @@ func (l *login) login(r client.Request) {
 	store.Token = res.Token
 
 	log.Info("login success")
+
+	err = l.proxy.Push(0, route.QuickStart, &commonpb.EmptyReq{})
+	if err != nil {
+		log.Errorf("push message failed: %v", err)
+	}
 }

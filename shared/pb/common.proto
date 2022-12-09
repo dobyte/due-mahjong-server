@@ -23,3 +23,7 @@ message User {
   string LastLoginIP = 10; // 最近登录IP
   int64 LastLoginTime = 11; // 最近登录时间
 }
+
+message EmptyReq {
+  int32 ID = 1;
+}

@@ -7,11 +7,10 @@ import (
 	"github.com/dobyte/due/cluster"
 	"github.com/dobyte/due/cluster/client"
 	"github.com/dobyte/due/log"
-	"time"
 )
 
 func Init(proxy client.Proxy) {
-	proxy.AddEventListener(cluster.Connect, func() {
+	proxy.AddEventListener(cluster.Connect, func(proxy client.Proxy) {
 		err := proxy.Push(0, route.Login, &pb.LoginReq{
 			Mode:     pb.LoginMode_Guest,
 			DeviceID: store.DeviceID,
@@ -21,7 +20,7 @@ func Init(proxy client.Proxy) {
 		}
 	})
 
-	proxy.AddEventListener(cluster.Reconnect, func() {
+	proxy.AddEventListener(cluster.Reconnect, func(proxy client.Proxy) {
 		if store.Token == "" {
 			err := proxy.Push(0, route.Login, &pb.LoginReq{
 				Mode:     pb.LoginMode_Guest,
@@ -42,16 +41,16 @@ func Init(proxy client.Proxy) {
 		}
 	})
 
-	proxy.AddEventListener(cluster.Disconnect, func() {
-		for {
-			err := proxy.Reconnect()
-			if err == nil {
-				return
-			}
-
-			time.Sleep(time.Second)
-
-			log.Errorf("reconnect failed: %v", err)
-		}
-	})
+	//proxy.AddEventListener(cluster.Disconnect, func(proxy client.Proxy) {
+	//	for {
+	//		err := proxy.Reconnect()
+	//		if err == nil {
+	//			return
+	//		}
+	//
+	//		time.Sleep(time.Second)
+	//
+	//		log.Errorf("reconnect failed: %v", err)
+	//	}
+	//})
 }
