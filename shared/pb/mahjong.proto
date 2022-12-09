@@ -7,23 +7,59 @@ package mahjong;
 import "code.proto";
 import "common.proto";
 
-
-message FetchRoomsReq {
-
+enum SeatState {
+  None = 0; // 无效
+  Offline = 1; // 离线
+  Online = 2; // 上线
+  SitDown = 3; // 坐下
+  StandUp = 4; // 起立
+  Ready = 5; // 准备
+  Unready = 6; // 取消准备
 }
 
-message QuickStartReq {
-
-}
-
+// 快速开始响应
 message QuickStartRes {
   common.Code Code = 1; // 错误码
   GameInfo GameInfo = 2; // 游戏信息
 }
 
+// 坐下请求
+message SitDownReq {
+  int32 RoomID = 1; // 房间ID
+  int32 TableID = 2; // 牌桌ID
+  int32 SeatID = 3; // 座位ID
+}
+
+// 坐下响应
+message SitDownRes {
+  common.Code Code = 1; // 错误码
+  GameInfo GameInfo = 2; // 游戏信息
+}
+
+// 站起响应
+message StandUpRes {
+  common.Code Code = 1; // 错误码
+}
+
+// 开始准备响应
+message ReadyRes {
+  common.Code Code = 1; // 错误码
+}
+
+// 取消准备响应
+message UnreadyRes {
+  common.Code Code = 1; // 错误码
+}
+
+// 游戏信息
 message GameInfo {
   Room Room = 1; // 房间
   Table Table = 2; // 牌桌
+}
+
+
+message FetchRoomsReq {
+
 }
 
 message Room {
@@ -41,6 +77,8 @@ message Table {
 message Seat {
   int32 ID = 1; // 座位ID
   Player Player = 2; // 玩家信息
+  bool IsOnline = 3; // 是否在线
+  bool IsReady = 4; // 是否准备
 }
 
 message Player {
@@ -48,12 +86,9 @@ message Player {
   bool IsMyself = 2; // 是否是自己
 }
 
-// 离线通知
-message OfflineNotify {
+// 玩家座位状态变更通知
+message SeatStateNotify {
   int32 SeatID = 1; // 座位ID
-}
-
-// 上线通知
-message OnlineNotify {
-  int32 SeatID = 1; // 座位ID
+  SeatState SeatState = 2; // 座位状态
+  Player Player = 3; // 玩家信息，仅在坐下时有玩家信息
 }

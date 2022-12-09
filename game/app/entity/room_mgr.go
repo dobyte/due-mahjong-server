@@ -2,23 +2,14 @@ package entity
 
 import (
 	"due-mahjong-server/shared/code"
-	"github.com/dobyte/due/config"
 	"github.com/dobyte/due/errors"
-	"github.com/dobyte/due/log"
 )
 
 type RoomMgr struct {
 	rooms map[int]*Room
 }
 
-func NewRoomMgr() *RoomMgr {
-	opts := make([]*RoomOptions, 0)
-
-	err := config.Get("rooms").Scan(&opts)
-	if err != nil {
-		log.Fatalf("load room config failed: %v", err)
-	}
-
+func NewRoomMgr(opts []*Options) *RoomMgr {
 	mgr := &RoomMgr{rooms: make(map[int]*Room, len(opts))}
 	for i := range opts {
 		room := newRoom(opts[i])

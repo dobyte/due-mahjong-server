@@ -1,6 +1,7 @@
 package entity
 
 import (
+	"context"
 	"due-mahjong-server/shared/code"
 	"github.com/dobyte/due/errors"
 	"sync"
@@ -8,13 +9,14 @@ import (
 )
 
 type Seat struct {
-	id    int
-	table *Table
+	ctx    context.Context
+	id     int
+	table  *Table
+	online int32 // 在线状态，0：离线 1：在线
 
-	rw      sync.RWMutex
-	player  *Player // 玩家
-	ready   int32   // 准备状态，0：未准备 1：已准备
-	offline int32   // 离线状态，0：在线 1：离线
+	rw     sync.RWMutex
+	player *Player // 玩家
+	ready  bool    // 准备中
 }
 
 func newSeat(id int, table *Table) *Seat {
@@ -34,7 +36,8 @@ func (s *Seat) Reset() {
 		s.player = nil
 	}
 
-	s.offline = 0
+	s.online = 0
+	s.ready = false
 }
 
 // ID 获取座位ID
@@ -76,11 +79,11 @@ func (s *Seat) AddPlayer(player *Player) error {
 		return err
 	}
 
-	if s.table.room.IsAutoReady() {
-		s.Ready()
-	}
-
 	s.player = player
+
+	if s.Table().Room().IsAutoReady() {
+		s.ready = true
+	}
 
 	return nil
 }
@@ -88,12 +91,17 @@ func (s *Seat) AddPlayer(player *Player) error {
 // RemPlayer 移除玩家座位
 // code.SeatIsEmpty
 // code.PlayerNotInSeat
+// code.PlayerIsReady
 func (s *Seat) RemPlayer() error {
 	s.rw.Lock()
 	defer s.rw.Unlock()
 
 	if s.player == nil {
 		return errors.NewError(code.SeatIsEmpty)
+	}
+
+	if s.ready {
+		return errors.NewError(code.PlayerIsReady)
 	}
 
 	err := s.player.RemSeat()
@@ -116,40 +124,50 @@ func (s *Seat) HasPlayer() bool {
 
 // IsOffline 检测座位上的玩家是否离线
 func (s *Seat) IsOffline() bool {
-	return atomic.LoadInt32(&s.offline) == 1
+	return atomic.LoadInt32(&s.online) == 0
 }
 
 // IsOnline 检测座位上的玩家是否在线
 func (s *Seat) IsOnline() bool {
-	return !s.IsOffline()
+	return atomic.LoadInt32(&s.online) == 1
 }
 
 // Offline 标记座位上的玩家离线
 func (s *Seat) Offline() {
-	atomic.StoreInt32(&s.offline, 1)
+	atomic.StoreInt32(&s.online, 1)
 }
 
 // Online 标记座位上的玩家上线
 func (s *Seat) Online() {
-	atomic.StoreInt32(&s.offline, 0)
+	atomic.StoreInt32(&s.online, 1)
 }
 
 // Ready 准备
 func (s *Seat) Ready() {
-	atomic.StoreInt32(&s.ready, 1)
+	s.rw.Lock()
+	s.ready = true
+	s.rw.Unlock()
 }
 
-// CancelReady 取消准备
-func (s *Seat) CancelReady() {
-	atomic.StoreInt32(&s.ready, 0)
+// Unready 取消准备
+func (s *Seat) Unready() {
+	s.rw.Lock()
+	s.ready = false
+	s.rw.Unlock()
 }
 
 // IsReady 是否已准备
 func (s *Seat) IsReady() bool {
-	return atomic.LoadInt32(&s.ready) == 1
+	s.rw.RLock()
+	defer s.rw.RUnlock()
+
+	return s.ready
 }
 
 // IsUnready 是否未准备好
 func (s *Seat) IsUnready() bool {
-	return !s.IsReady()
+	s.rw.RLock()
+	defer s.rw.RUnlock()
+
+	return !s.ready
 }

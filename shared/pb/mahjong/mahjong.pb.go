@@ -21,82 +21,68 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type FetchRoomsReq struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-}
+type SeatState int32
 
-func (x *FetchRoomsReq) Reset() {
-	*x = FetchRoomsReq{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_mahjong_proto_msgTypes[0]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
+const (
+	SeatState_None    SeatState = 0 // 无效
+	SeatState_Offline SeatState = 1 // 离线
+	SeatState_Online  SeatState = 2 // 上线
+	SeatState_SitDown SeatState = 3 // 坐下
+	SeatState_StandUp SeatState = 4 // 起立
+	SeatState_Ready   SeatState = 5 // 准备
+	SeatState_Unready SeatState = 6 // 取消准备
+)
+
+// Enum value maps for SeatState.
+var (
+	SeatState_name = map[int32]string{
+		0: "None",
+		1: "Offline",
+		2: "Online",
+		3: "SitDown",
+		4: "StandUp",
+		5: "Ready",
+		6: "Unready",
 	}
-}
-
-func (x *FetchRoomsReq) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*FetchRoomsReq) ProtoMessage() {}
-
-func (x *FetchRoomsReq) ProtoReflect() protoreflect.Message {
-	mi := &file_mahjong_proto_msgTypes[0]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
+	SeatState_value = map[string]int32{
+		"None":    0,
+		"Offline": 1,
+		"Online":  2,
+		"SitDown": 3,
+		"StandUp": 4,
+		"Ready":   5,
+		"Unready": 6,
 	}
-	return mi.MessageOf(x)
+)
+
+func (x SeatState) Enum() *SeatState {
+	p := new(SeatState)
+	*p = x
+	return p
 }
 
-// Deprecated: Use FetchRoomsReq.ProtoReflect.Descriptor instead.
-func (*FetchRoomsReq) Descriptor() ([]byte, []int) {
+func (x SeatState) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (SeatState) Descriptor() protoreflect.EnumDescriptor {
+	return file_mahjong_proto_enumTypes[0].Descriptor()
+}
+
+func (SeatState) Type() protoreflect.EnumType {
+	return &file_mahjong_proto_enumTypes[0]
+}
+
+func (x SeatState) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use SeatState.Descriptor instead.
+func (SeatState) EnumDescriptor() ([]byte, []int) {
 	return file_mahjong_proto_rawDescGZIP(), []int{0}
 }
 
-type QuickStartReq struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-}
-
-func (x *QuickStartReq) Reset() {
-	*x = QuickStartReq{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_mahjong_proto_msgTypes[1]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *QuickStartReq) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*QuickStartReq) ProtoMessage() {}
-
-func (x *QuickStartReq) ProtoReflect() protoreflect.Message {
-	mi := &file_mahjong_proto_msgTypes[1]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use QuickStartReq.ProtoReflect.Descriptor instead.
-func (*QuickStartReq) Descriptor() ([]byte, []int) {
-	return file_mahjong_proto_rawDescGZIP(), []int{1}
-}
-
+// 快速开始响应
 type QuickStartRes struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -109,7 +95,7 @@ type QuickStartRes struct {
 func (x *QuickStartRes) Reset() {
 	*x = QuickStartRes{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_mahjong_proto_msgTypes[2]
+		mi := &file_mahjong_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -122,7 +108,7 @@ func (x *QuickStartRes) String() string {
 func (*QuickStartRes) ProtoMessage() {}
 
 func (x *QuickStartRes) ProtoReflect() protoreflect.Message {
-	mi := &file_mahjong_proto_msgTypes[2]
+	mi := &file_mahjong_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -135,7 +121,7 @@ func (x *QuickStartRes) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QuickStartRes.ProtoReflect.Descriptor instead.
 func (*QuickStartRes) Descriptor() ([]byte, []int) {
-	return file_mahjong_proto_rawDescGZIP(), []int{2}
+	return file_mahjong_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *QuickStartRes) GetCode() common.Code {
@@ -152,6 +138,271 @@ func (x *QuickStartRes) GetGameInfo() *GameInfo {
 	return nil
 }
 
+// 坐下请求
+type SitDownReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	RoomID  int32 `protobuf:"varint,1,opt,name=RoomID,proto3" json:"RoomID,omitempty"`   // 房间ID
+	TableID int32 `protobuf:"varint,2,opt,name=TableID,proto3" json:"TableID,omitempty"` // 牌桌ID
+	SeatID  int32 `protobuf:"varint,3,opt,name=SeatID,proto3" json:"SeatID,omitempty"`   // 座位ID
+}
+
+func (x *SitDownReq) Reset() {
+	*x = SitDownReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_mahjong_proto_msgTypes[1]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *SitDownReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SitDownReq) ProtoMessage() {}
+
+func (x *SitDownReq) ProtoReflect() protoreflect.Message {
+	mi := &file_mahjong_proto_msgTypes[1]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SitDownReq.ProtoReflect.Descriptor instead.
+func (*SitDownReq) Descriptor() ([]byte, []int) {
+	return file_mahjong_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *SitDownReq) GetRoomID() int32 {
+	if x != nil {
+		return x.RoomID
+	}
+	return 0
+}
+
+func (x *SitDownReq) GetTableID() int32 {
+	if x != nil {
+		return x.TableID
+	}
+	return 0
+}
+
+func (x *SitDownReq) GetSeatID() int32 {
+	if x != nil {
+		return x.SeatID
+	}
+	return 0
+}
+
+// 坐下响应
+type SitDownRes struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Code     common.Code `protobuf:"varint,1,opt,name=Code,proto3,enum=common.Code" json:"Code,omitempty"` // 错误码
+	GameInfo *GameInfo   `protobuf:"bytes,2,opt,name=GameInfo,proto3" json:"GameInfo,omitempty"`           // 游戏信息
+}
+
+func (x *SitDownRes) Reset() {
+	*x = SitDownRes{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_mahjong_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *SitDownRes) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SitDownRes) ProtoMessage() {}
+
+func (x *SitDownRes) ProtoReflect() protoreflect.Message {
+	mi := &file_mahjong_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SitDownRes.ProtoReflect.Descriptor instead.
+func (*SitDownRes) Descriptor() ([]byte, []int) {
+	return file_mahjong_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *SitDownRes) GetCode() common.Code {
+	if x != nil {
+		return x.Code
+	}
+	return common.Code(0)
+}
+
+func (x *SitDownRes) GetGameInfo() *GameInfo {
+	if x != nil {
+		return x.GameInfo
+	}
+	return nil
+}
+
+// 站起响应
+type StandUpRes struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Code common.Code `protobuf:"varint,1,opt,name=Code,proto3,enum=common.Code" json:"Code,omitempty"` // 错误码
+}
+
+func (x *StandUpRes) Reset() {
+	*x = StandUpRes{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_mahjong_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *StandUpRes) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*StandUpRes) ProtoMessage() {}
+
+func (x *StandUpRes) ProtoReflect() protoreflect.Message {
+	mi := &file_mahjong_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use StandUpRes.ProtoReflect.Descriptor instead.
+func (*StandUpRes) Descriptor() ([]byte, []int) {
+	return file_mahjong_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *StandUpRes) GetCode() common.Code {
+	if x != nil {
+		return x.Code
+	}
+	return common.Code(0)
+}
+
+// 开始准备响应
+type ReadyRes struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Code common.Code `protobuf:"varint,1,opt,name=Code,proto3,enum=common.Code" json:"Code,omitempty"` // 错误码
+}
+
+func (x *ReadyRes) Reset() {
+	*x = ReadyRes{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_mahjong_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ReadyRes) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ReadyRes) ProtoMessage() {}
+
+func (x *ReadyRes) ProtoReflect() protoreflect.Message {
+	mi := &file_mahjong_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ReadyRes.ProtoReflect.Descriptor instead.
+func (*ReadyRes) Descriptor() ([]byte, []int) {
+	return file_mahjong_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *ReadyRes) GetCode() common.Code {
+	if x != nil {
+		return x.Code
+	}
+	return common.Code(0)
+}
+
+// 取消准备响应
+type UnreadyRes struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Code common.Code `protobuf:"varint,1,opt,name=Code,proto3,enum=common.Code" json:"Code,omitempty"` // 错误码
+}
+
+func (x *UnreadyRes) Reset() {
+	*x = UnreadyRes{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_mahjong_proto_msgTypes[5]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *UnreadyRes) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UnreadyRes) ProtoMessage() {}
+
+func (x *UnreadyRes) ProtoReflect() protoreflect.Message {
+	mi := &file_mahjong_proto_msgTypes[5]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UnreadyRes.ProtoReflect.Descriptor instead.
+func (*UnreadyRes) Descriptor() ([]byte, []int) {
+	return file_mahjong_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *UnreadyRes) GetCode() common.Code {
+	if x != nil {
+		return x.Code
+	}
+	return common.Code(0)
+}
+
+// 游戏信息
 type GameInfo struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -164,7 +415,7 @@ type GameInfo struct {
 func (x *GameInfo) Reset() {
 	*x = GameInfo{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_mahjong_proto_msgTypes[3]
+		mi := &file_mahjong_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -177,7 +428,7 @@ func (x *GameInfo) String() string {
 func (*GameInfo) ProtoMessage() {}
 
 func (x *GameInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_mahjong_proto_msgTypes[3]
+	mi := &file_mahjong_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -190,7 +441,7 @@ func (x *GameInfo) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GameInfo.ProtoReflect.Descriptor instead.
 func (*GameInfo) Descriptor() ([]byte, []int) {
-	return file_mahjong_proto_rawDescGZIP(), []int{3}
+	return file_mahjong_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *GameInfo) GetRoom() *Room {
@@ -207,6 +458,44 @@ func (x *GameInfo) GetTable() *Table {
 	return nil
 }
 
+type FetchRoomsReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *FetchRoomsReq) Reset() {
+	*x = FetchRoomsReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_mahjong_proto_msgTypes[7]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *FetchRoomsReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FetchRoomsReq) ProtoMessage() {}
+
+func (x *FetchRoomsReq) ProtoReflect() protoreflect.Message {
+	mi := &file_mahjong_proto_msgTypes[7]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use FetchRoomsReq.ProtoReflect.Descriptor instead.
+func (*FetchRoomsReq) Descriptor() ([]byte, []int) {
+	return file_mahjong_proto_rawDescGZIP(), []int{7}
+}
+
 type Room struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -221,7 +510,7 @@ type Room struct {
 func (x *Room) Reset() {
 	*x = Room{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_mahjong_proto_msgTypes[4]
+		mi := &file_mahjong_proto_msgTypes[8]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -234,7 +523,7 @@ func (x *Room) String() string {
 func (*Room) ProtoMessage() {}
 
 func (x *Room) ProtoReflect() protoreflect.Message {
-	mi := &file_mahjong_proto_msgTypes[4]
+	mi := &file_mahjong_proto_msgTypes[8]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -247,7 +536,7 @@ func (x *Room) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Room.ProtoReflect.Descriptor instead.
 func (*Room) Descriptor() ([]byte, []int) {
-	return file_mahjong_proto_rawDescGZIP(), []int{4}
+	return file_mahjong_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *Room) GetID() int32 {
@@ -290,7 +579,7 @@ type Table struct {
 func (x *Table) Reset() {
 	*x = Table{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_mahjong_proto_msgTypes[5]
+		mi := &file_mahjong_proto_msgTypes[9]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -303,7 +592,7 @@ func (x *Table) String() string {
 func (*Table) ProtoMessage() {}
 
 func (x *Table) ProtoReflect() protoreflect.Message {
-	mi := &file_mahjong_proto_msgTypes[5]
+	mi := &file_mahjong_proto_msgTypes[9]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -316,7 +605,7 @@ func (x *Table) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Table.ProtoReflect.Descriptor instead.
 func (*Table) Descriptor() ([]byte, []int) {
-	return file_mahjong_proto_rawDescGZIP(), []int{5}
+	return file_mahjong_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *Table) GetID() int32 {
@@ -338,14 +627,16 @@ type Seat struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	ID     int32   `protobuf:"varint,1,opt,name=ID,proto3" json:"ID,omitempty"`        // 座位ID
-	Player *Player `protobuf:"bytes,2,opt,name=Player,proto3" json:"Player,omitempty"` // 玩家信息
+	ID       int32   `protobuf:"varint,1,opt,name=ID,proto3" json:"ID,omitempty"`             // 座位ID
+	Player   *Player `protobuf:"bytes,2,opt,name=Player,proto3" json:"Player,omitempty"`      // 玩家信息
+	IsOnline bool    `protobuf:"varint,3,opt,name=IsOnline,proto3" json:"IsOnline,omitempty"` // 是否在线
+	IsReady  bool    `protobuf:"varint,4,opt,name=IsReady,proto3" json:"IsReady,omitempty"`   // 是否准备
 }
 
 func (x *Seat) Reset() {
 	*x = Seat{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_mahjong_proto_msgTypes[6]
+		mi := &file_mahjong_proto_msgTypes[10]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -358,7 +649,7 @@ func (x *Seat) String() string {
 func (*Seat) ProtoMessage() {}
 
 func (x *Seat) ProtoReflect() protoreflect.Message {
-	mi := &file_mahjong_proto_msgTypes[6]
+	mi := &file_mahjong_proto_msgTypes[10]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -371,7 +662,7 @@ func (x *Seat) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Seat.ProtoReflect.Descriptor instead.
 func (*Seat) Descriptor() ([]byte, []int) {
-	return file_mahjong_proto_rawDescGZIP(), []int{6}
+	return file_mahjong_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *Seat) GetID() int32 {
@@ -388,6 +679,20 @@ func (x *Seat) GetPlayer() *Player {
 	return nil
 }
 
+func (x *Seat) GetIsOnline() bool {
+	if x != nil {
+		return x.IsOnline
+	}
+	return false
+}
+
+func (x *Seat) GetIsReady() bool {
+	if x != nil {
+		return x.IsReady
+	}
+	return false
+}
+
 type Player struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -400,7 +705,7 @@ type Player struct {
 func (x *Player) Reset() {
 	*x = Player{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_mahjong_proto_msgTypes[7]
+		mi := &file_mahjong_proto_msgTypes[11]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -413,7 +718,7 @@ func (x *Player) String() string {
 func (*Player) ProtoMessage() {}
 
 func (x *Player) ProtoReflect() protoreflect.Message {
-	mi := &file_mahjong_proto_msgTypes[7]
+	mi := &file_mahjong_proto_msgTypes[11]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -426,7 +731,7 @@ func (x *Player) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Player.ProtoReflect.Descriptor instead.
 func (*Player) Descriptor() ([]byte, []int) {
-	return file_mahjong_proto_rawDescGZIP(), []int{7}
+	return file_mahjong_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *Player) GetUser() *common.User {
@@ -443,32 +748,34 @@ func (x *Player) GetIsMyself() bool {
 	return false
 }
 
-// 离线通知
-type OfflineNotify struct {
+// 玩家座位状态变更通知
+type SeatStateNotify struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	SeatID int32 `protobuf:"varint,1,opt,name=SeatID,proto3" json:"SeatID,omitempty"` // 座位ID
+	SeatID    int32     `protobuf:"varint,1,opt,name=SeatID,proto3" json:"SeatID,omitempty"`                              // 座位ID
+	SeatState SeatState `protobuf:"varint,2,opt,name=SeatState,proto3,enum=mahjong.SeatState" json:"SeatState,omitempty"` // 座位状态
+	Player    *Player   `protobuf:"bytes,3,opt,name=Player,proto3" json:"Player,omitempty"`                               // 玩家信息，仅在坐下时有玩家信息
 }
 
-func (x *OfflineNotify) Reset() {
-	*x = OfflineNotify{}
+func (x *SeatStateNotify) Reset() {
+	*x = SeatStateNotify{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_mahjong_proto_msgTypes[8]
+		mi := &file_mahjong_proto_msgTypes[12]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
 }
 
-func (x *OfflineNotify) String() string {
+func (x *SeatStateNotify) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*OfflineNotify) ProtoMessage() {}
+func (*SeatStateNotify) ProtoMessage() {}
 
-func (x *OfflineNotify) ProtoReflect() protoreflect.Message {
-	mi := &file_mahjong_proto_msgTypes[8]
+func (x *SeatStateNotify) ProtoReflect() protoreflect.Message {
+	mi := &file_mahjong_proto_msgTypes[12]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -479,64 +786,30 @@ func (x *OfflineNotify) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use OfflineNotify.ProtoReflect.Descriptor instead.
-func (*OfflineNotify) Descriptor() ([]byte, []int) {
-	return file_mahjong_proto_rawDescGZIP(), []int{8}
+// Deprecated: Use SeatStateNotify.ProtoReflect.Descriptor instead.
+func (*SeatStateNotify) Descriptor() ([]byte, []int) {
+	return file_mahjong_proto_rawDescGZIP(), []int{12}
 }
 
-func (x *OfflineNotify) GetSeatID() int32 {
+func (x *SeatStateNotify) GetSeatID() int32 {
 	if x != nil {
 		return x.SeatID
 	}
 	return 0
 }
 
-// 上线通知
-type OnlineNotify struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	SeatID int32 `protobuf:"varint,1,opt,name=SeatID,proto3" json:"SeatID,omitempty"` // 座位ID
-}
-
-func (x *OnlineNotify) Reset() {
-	*x = OnlineNotify{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_mahjong_proto_msgTypes[9]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *OnlineNotify) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*OnlineNotify) ProtoMessage() {}
-
-func (x *OnlineNotify) ProtoReflect() protoreflect.Message {
-	mi := &file_mahjong_proto_msgTypes[9]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use OnlineNotify.ProtoReflect.Descriptor instead.
-func (*OnlineNotify) Descriptor() ([]byte, []int) {
-	return file_mahjong_proto_rawDescGZIP(), []int{9}
-}
-
-func (x *OnlineNotify) GetSeatID() int32 {
+func (x *SeatStateNotify) GetSeatState() SeatState {
 	if x != nil {
-		return x.SeatID
+		return x.SeatState
 	}
-	return 0
+	return SeatState_None
+}
+
+func (x *SeatStateNotify) GetPlayer() *Player {
+	if x != nil {
+		return x.Player
+	}
+	return nil
 }
 
 var File_mahjong_proto protoreflect.FileDescriptor
@@ -545,48 +818,80 @@ var file_mahjong_proto_rawDesc = []byte{
 	0x0a, 0x0d, 0x6d, 0x61, 0x68, 0x6a, 0x6f, 0x6e, 0x67, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12,
 	0x07, 0x6d, 0x61, 0x68, 0x6a, 0x6f, 0x6e, 0x67, 0x1a, 0x0a, 0x63, 0x6f, 0x64, 0x65, 0x2e, 0x70,
 	0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x0c, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x70, 0x72, 0x6f,
-	0x74, 0x6f, 0x22, 0x0f, 0x0a, 0x0d, 0x46, 0x65, 0x74, 0x63, 0x68, 0x52, 0x6f, 0x6f, 0x6d, 0x73,
-	0x52, 0x65, 0x71, 0x22, 0x0f, 0x0a, 0x0d, 0x51, 0x75, 0x69, 0x63, 0x6b, 0x53, 0x74, 0x61, 0x72,
-	0x74, 0x52, 0x65, 0x71, 0x22, 0x60, 0x0a, 0x0d, 0x51, 0x75, 0x69, 0x63, 0x6b, 0x53, 0x74, 0x61,
-	0x72, 0x74, 0x52, 0x65, 0x73, 0x12, 0x20, 0x0a, 0x04, 0x43, 0x6f, 0x64, 0x65, 0x18, 0x01, 0x20,
-	0x01, 0x28, 0x0e, 0x32, 0x0c, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x43, 0x6f, 0x64,
-	0x65, 0x52, 0x04, 0x43, 0x6f, 0x64, 0x65, 0x12, 0x2d, 0x0a, 0x08, 0x47, 0x61, 0x6d, 0x65, 0x49,
-	0x6e, 0x66, 0x6f, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x11, 0x2e, 0x6d, 0x61, 0x68, 0x6a,
-	0x6f, 0x6e, 0x67, 0x2e, 0x47, 0x61, 0x6d, 0x65, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x08, 0x47, 0x61,
-	0x6d, 0x65, 0x49, 0x6e, 0x66, 0x6f, 0x22, 0x53, 0x0a, 0x08, 0x47, 0x61, 0x6d, 0x65, 0x49, 0x6e,
-	0x66, 0x6f, 0x12, 0x21, 0x0a, 0x04, 0x52, 0x6f, 0x6f, 0x6d, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b,
-	0x32, 0x0d, 0x2e, 0x6d, 0x61, 0x68, 0x6a, 0x6f, 0x6e, 0x67, 0x2e, 0x52, 0x6f, 0x6f, 0x6d, 0x52,
-	0x04, 0x52, 0x6f, 0x6f, 0x6d, 0x12, 0x24, 0x0a, 0x05, 0x54, 0x61, 0x62, 0x6c, 0x65, 0x18, 0x02,
-	0x20, 0x01, 0x28, 0x0b, 0x32, 0x0e, 0x2e, 0x6d, 0x61, 0x68, 0x6a, 0x6f, 0x6e, 0x67, 0x2e, 0x54,
-	0x61, 0x62, 0x6c, 0x65, 0x52, 0x05, 0x54, 0x61, 0x62, 0x6c, 0x65, 0x22, 0x76, 0x0a, 0x04, 0x52,
-	0x6f, 0x6f, 0x6d, 0x12, 0x0e, 0x0a, 0x02, 0x49, 0x44, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52,
-	0x02, 0x49, 0x44, 0x12, 0x12, 0x0a, 0x04, 0x4e, 0x61, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x04, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x24, 0x0a, 0x0d, 0x4d, 0x69, 0x6e, 0x45, 0x6e,
-	0x74, 0x72, 0x79, 0x4c, 0x69, 0x6d, 0x69, 0x74, 0x18, 0x03, 0x20, 0x01, 0x28, 0x05, 0x52, 0x0d,
-	0x4d, 0x69, 0x6e, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x4c, 0x69, 0x6d, 0x69, 0x74, 0x12, 0x24, 0x0a,
-	0x0d, 0x4d, 0x61, 0x78, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x4c, 0x69, 0x6d, 0x69, 0x74, 0x18, 0x04,
-	0x20, 0x01, 0x28, 0x05, 0x52, 0x0d, 0x4d, 0x61, 0x78, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x4c, 0x69,
-	0x6d, 0x69, 0x74, 0x22, 0x3c, 0x0a, 0x05, 0x54, 0x61, 0x62, 0x6c, 0x65, 0x12, 0x0e, 0x0a, 0x02,
-	0x49, 0x44, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x02, 0x49, 0x44, 0x12, 0x23, 0x0a, 0x05,
-	0x53, 0x65, 0x61, 0x74, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x0d, 0x2e, 0x6d, 0x61,
-	0x68, 0x6a, 0x6f, 0x6e, 0x67, 0x2e, 0x53, 0x65, 0x61, 0x74, 0x52, 0x05, 0x53, 0x65, 0x61, 0x74,
-	0x73, 0x22, 0x3f, 0x0a, 0x04, 0x53, 0x65, 0x61, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x49, 0x44, 0x18,
-	0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x02, 0x49, 0x44, 0x12, 0x27, 0x0a, 0x06, 0x50, 0x6c, 0x61,
-	0x79, 0x65, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0f, 0x2e, 0x6d, 0x61, 0x68, 0x6a,
-	0x6f, 0x6e, 0x67, 0x2e, 0x50, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x52, 0x06, 0x50, 0x6c, 0x61, 0x79,
-	0x65, 0x72, 0x22, 0x46, 0x0a, 0x06, 0x50, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x12, 0x20, 0x0a, 0x04,
-	0x55, 0x73, 0x65, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0c, 0x2e, 0x63, 0x6f, 0x6d,
-	0x6d, 0x6f, 0x6e, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x52, 0x04, 0x55, 0x73, 0x65, 0x72, 0x12, 0x1a,
-	0x0a, 0x08, 0x49, 0x73, 0x4d, 0x79, 0x73, 0x65, 0x6c, 0x66, 0x18, 0x02, 0x20, 0x01, 0x28, 0x08,
-	0x52, 0x08, 0x49, 0x73, 0x4d, 0x79, 0x73, 0x65, 0x6c, 0x66, 0x22, 0x27, 0x0a, 0x0d, 0x4f, 0x66,
-	0x66, 0x6c, 0x69, 0x6e, 0x65, 0x4e, 0x6f, 0x74, 0x69, 0x66, 0x79, 0x12, 0x16, 0x0a, 0x06, 0x53,
-	0x65, 0x61, 0x74, 0x49, 0x44, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x06, 0x53, 0x65, 0x61,
-	0x74, 0x49, 0x44, 0x22, 0x26, 0x0a, 0x0c, 0x4f, 0x6e, 0x6c, 0x69, 0x6e, 0x65, 0x4e, 0x6f, 0x74,
-	0x69, 0x66, 0x79, 0x12, 0x16, 0x0a, 0x06, 0x53, 0x65, 0x61, 0x74, 0x49, 0x44, 0x18, 0x01, 0x20,
-	0x01, 0x28, 0x05, 0x52, 0x06, 0x53, 0x65, 0x61, 0x74, 0x49, 0x44, 0x42, 0x26, 0x5a, 0x24, 0x64,
-	0x75, 0x65, 0x2d, 0x6d, 0x61, 0x68, 0x6a, 0x6f, 0x6e, 0x67, 0x2d, 0x73, 0x65, 0x72, 0x76, 0x65,
-	0x72, 0x2f, 0x73, 0x68, 0x61, 0x72, 0x65, 0x64, 0x2f, 0x70, 0x62, 0x2f, 0x6d, 0x61, 0x68, 0x6a,
-	0x6f, 0x6e, 0x67, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x74, 0x6f, 0x22, 0x60, 0x0a, 0x0d, 0x51, 0x75, 0x69, 0x63, 0x6b, 0x53, 0x74, 0x61, 0x72, 0x74,
+	0x52, 0x65, 0x73, 0x12, 0x20, 0x0a, 0x04, 0x43, 0x6f, 0x64, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x0e, 0x32, 0x0c, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x43, 0x6f, 0x64, 0x65, 0x52,
+	0x04, 0x43, 0x6f, 0x64, 0x65, 0x12, 0x2d, 0x0a, 0x08, 0x47, 0x61, 0x6d, 0x65, 0x49, 0x6e, 0x66,
+	0x6f, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x11, 0x2e, 0x6d, 0x61, 0x68, 0x6a, 0x6f, 0x6e,
+	0x67, 0x2e, 0x47, 0x61, 0x6d, 0x65, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x08, 0x47, 0x61, 0x6d, 0x65,
+	0x49, 0x6e, 0x66, 0x6f, 0x22, 0x56, 0x0a, 0x0a, 0x53, 0x69, 0x74, 0x44, 0x6f, 0x77, 0x6e, 0x52,
+	0x65, 0x71, 0x12, 0x16, 0x0a, 0x06, 0x52, 0x6f, 0x6f, 0x6d, 0x49, 0x44, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x05, 0x52, 0x06, 0x52, 0x6f, 0x6f, 0x6d, 0x49, 0x44, 0x12, 0x18, 0x0a, 0x07, 0x54, 0x61,
+	0x62, 0x6c, 0x65, 0x49, 0x44, 0x18, 0x02, 0x20, 0x01, 0x28, 0x05, 0x52, 0x07, 0x54, 0x61, 0x62,
+	0x6c, 0x65, 0x49, 0x44, 0x12, 0x16, 0x0a, 0x06, 0x53, 0x65, 0x61, 0x74, 0x49, 0x44, 0x18, 0x03,
+	0x20, 0x01, 0x28, 0x05, 0x52, 0x06, 0x53, 0x65, 0x61, 0x74, 0x49, 0x44, 0x22, 0x5d, 0x0a, 0x0a,
+	0x53, 0x69, 0x74, 0x44, 0x6f, 0x77, 0x6e, 0x52, 0x65, 0x73, 0x12, 0x20, 0x0a, 0x04, 0x43, 0x6f,
+	0x64, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x0c, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f,
+	0x6e, 0x2e, 0x43, 0x6f, 0x64, 0x65, 0x52, 0x04, 0x43, 0x6f, 0x64, 0x65, 0x12, 0x2d, 0x0a, 0x08,
+	0x47, 0x61, 0x6d, 0x65, 0x49, 0x6e, 0x66, 0x6f, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x11,
+	0x2e, 0x6d, 0x61, 0x68, 0x6a, 0x6f, 0x6e, 0x67, 0x2e, 0x47, 0x61, 0x6d, 0x65, 0x49, 0x6e, 0x66,
+	0x6f, 0x52, 0x08, 0x47, 0x61, 0x6d, 0x65, 0x49, 0x6e, 0x66, 0x6f, 0x22, 0x2e, 0x0a, 0x0a, 0x53,
+	0x74, 0x61, 0x6e, 0x64, 0x55, 0x70, 0x52, 0x65, 0x73, 0x12, 0x20, 0x0a, 0x04, 0x43, 0x6f, 0x64,
+	0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x0c, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e,
+	0x2e, 0x43, 0x6f, 0x64, 0x65, 0x52, 0x04, 0x43, 0x6f, 0x64, 0x65, 0x22, 0x2c, 0x0a, 0x08, 0x52,
+	0x65, 0x61, 0x64, 0x79, 0x52, 0x65, 0x73, 0x12, 0x20, 0x0a, 0x04, 0x43, 0x6f, 0x64, 0x65, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x0c, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x43,
+	0x6f, 0x64, 0x65, 0x52, 0x04, 0x43, 0x6f, 0x64, 0x65, 0x22, 0x2e, 0x0a, 0x0a, 0x55, 0x6e, 0x72,
+	0x65, 0x61, 0x64, 0x79, 0x52, 0x65, 0x73, 0x12, 0x20, 0x0a, 0x04, 0x43, 0x6f, 0x64, 0x65, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x0c, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x43,
+	0x6f, 0x64, 0x65, 0x52, 0x04, 0x43, 0x6f, 0x64, 0x65, 0x22, 0x53, 0x0a, 0x08, 0x47, 0x61, 0x6d,
+	0x65, 0x49, 0x6e, 0x66, 0x6f, 0x12, 0x21, 0x0a, 0x04, 0x52, 0x6f, 0x6f, 0x6d, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x0b, 0x32, 0x0d, 0x2e, 0x6d, 0x61, 0x68, 0x6a, 0x6f, 0x6e, 0x67, 0x2e, 0x52, 0x6f,
+	0x6f, 0x6d, 0x52, 0x04, 0x52, 0x6f, 0x6f, 0x6d, 0x12, 0x24, 0x0a, 0x05, 0x54, 0x61, 0x62, 0x6c,
+	0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0e, 0x2e, 0x6d, 0x61, 0x68, 0x6a, 0x6f, 0x6e,
+	0x67, 0x2e, 0x54, 0x61, 0x62, 0x6c, 0x65, 0x52, 0x05, 0x54, 0x61, 0x62, 0x6c, 0x65, 0x22, 0x0f,
+	0x0a, 0x0d, 0x46, 0x65, 0x74, 0x63, 0x68, 0x52, 0x6f, 0x6f, 0x6d, 0x73, 0x52, 0x65, 0x71, 0x22,
+	0x76, 0x0a, 0x04, 0x52, 0x6f, 0x6f, 0x6d, 0x12, 0x0e, 0x0a, 0x02, 0x49, 0x44, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x05, 0x52, 0x02, 0x49, 0x44, 0x12, 0x12, 0x0a, 0x04, 0x4e, 0x61, 0x6d, 0x65, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x24, 0x0a, 0x0d, 0x4d,
+	0x69, 0x6e, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x4c, 0x69, 0x6d, 0x69, 0x74, 0x18, 0x03, 0x20, 0x01,
+	0x28, 0x05, 0x52, 0x0d, 0x4d, 0x69, 0x6e, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x4c, 0x69, 0x6d, 0x69,
+	0x74, 0x12, 0x24, 0x0a, 0x0d, 0x4d, 0x61, 0x78, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x4c, 0x69, 0x6d,
+	0x69, 0x74, 0x18, 0x04, 0x20, 0x01, 0x28, 0x05, 0x52, 0x0d, 0x4d, 0x61, 0x78, 0x45, 0x6e, 0x74,
+	0x72, 0x79, 0x4c, 0x69, 0x6d, 0x69, 0x74, 0x22, 0x3c, 0x0a, 0x05, 0x54, 0x61, 0x62, 0x6c, 0x65,
+	0x12, 0x0e, 0x0a, 0x02, 0x49, 0x44, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x02, 0x49, 0x44,
+	0x12, 0x23, 0x0a, 0x05, 0x53, 0x65, 0x61, 0x74, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32,
+	0x0d, 0x2e, 0x6d, 0x61, 0x68, 0x6a, 0x6f, 0x6e, 0x67, 0x2e, 0x53, 0x65, 0x61, 0x74, 0x52, 0x05,
+	0x53, 0x65, 0x61, 0x74, 0x73, 0x22, 0x75, 0x0a, 0x04, 0x53, 0x65, 0x61, 0x74, 0x12, 0x0e, 0x0a,
+	0x02, 0x49, 0x44, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x02, 0x49, 0x44, 0x12, 0x27, 0x0a,
+	0x06, 0x50, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0f, 0x2e,
+	0x6d, 0x61, 0x68, 0x6a, 0x6f, 0x6e, 0x67, 0x2e, 0x50, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x52, 0x06,
+	0x50, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x12, 0x1a, 0x0a, 0x08, 0x49, 0x73, 0x4f, 0x6e, 0x6c, 0x69,
+	0x6e, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x08, 0x52, 0x08, 0x49, 0x73, 0x4f, 0x6e, 0x6c, 0x69,
+	0x6e, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x49, 0x73, 0x52, 0x65, 0x61, 0x64, 0x79, 0x18, 0x04, 0x20,
+	0x01, 0x28, 0x08, 0x52, 0x07, 0x49, 0x73, 0x52, 0x65, 0x61, 0x64, 0x79, 0x22, 0x46, 0x0a, 0x06,
+	0x50, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x12, 0x20, 0x0a, 0x04, 0x55, 0x73, 0x65, 0x72, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x0b, 0x32, 0x0c, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x55, 0x73,
+	0x65, 0x72, 0x52, 0x04, 0x55, 0x73, 0x65, 0x72, 0x12, 0x1a, 0x0a, 0x08, 0x49, 0x73, 0x4d, 0x79,
+	0x73, 0x65, 0x6c, 0x66, 0x18, 0x02, 0x20, 0x01, 0x28, 0x08, 0x52, 0x08, 0x49, 0x73, 0x4d, 0x79,
+	0x73, 0x65, 0x6c, 0x66, 0x22, 0x84, 0x01, 0x0a, 0x0f, 0x53, 0x65, 0x61, 0x74, 0x53, 0x74, 0x61,
+	0x74, 0x65, 0x4e, 0x6f, 0x74, 0x69, 0x66, 0x79, 0x12, 0x16, 0x0a, 0x06, 0x53, 0x65, 0x61, 0x74,
+	0x49, 0x44, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x06, 0x53, 0x65, 0x61, 0x74, 0x49, 0x44,
+	0x12, 0x30, 0x0a, 0x09, 0x53, 0x65, 0x61, 0x74, 0x53, 0x74, 0x61, 0x74, 0x65, 0x18, 0x02, 0x20,
+	0x01, 0x28, 0x0e, 0x32, 0x12, 0x2e, 0x6d, 0x61, 0x68, 0x6a, 0x6f, 0x6e, 0x67, 0x2e, 0x53, 0x65,
+	0x61, 0x74, 0x53, 0x74, 0x61, 0x74, 0x65, 0x52, 0x09, 0x53, 0x65, 0x61, 0x74, 0x53, 0x74, 0x61,
+	0x74, 0x65, 0x12, 0x27, 0x0a, 0x06, 0x50, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x18, 0x03, 0x20, 0x01,
+	0x28, 0x0b, 0x32, 0x0f, 0x2e, 0x6d, 0x61, 0x68, 0x6a, 0x6f, 0x6e, 0x67, 0x2e, 0x50, 0x6c, 0x61,
+	0x79, 0x65, 0x72, 0x52, 0x06, 0x50, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x2a, 0x60, 0x0a, 0x09, 0x53,
+	0x65, 0x61, 0x74, 0x53, 0x74, 0x61, 0x74, 0x65, 0x12, 0x08, 0x0a, 0x04, 0x4e, 0x6f, 0x6e, 0x65,
+	0x10, 0x00, 0x12, 0x0b, 0x0a, 0x07, 0x4f, 0x66, 0x66, 0x6c, 0x69, 0x6e, 0x65, 0x10, 0x01, 0x12,
+	0x0a, 0x0a, 0x06, 0x4f, 0x6e, 0x6c, 0x69, 0x6e, 0x65, 0x10, 0x02, 0x12, 0x0b, 0x0a, 0x07, 0x53,
+	0x69, 0x74, 0x44, 0x6f, 0x77, 0x6e, 0x10, 0x03, 0x12, 0x0b, 0x0a, 0x07, 0x53, 0x74, 0x61, 0x6e,
+	0x64, 0x55, 0x70, 0x10, 0x04, 0x12, 0x09, 0x0a, 0x05, 0x52, 0x65, 0x61, 0x64, 0x79, 0x10, 0x05,
+	0x12, 0x0b, 0x0a, 0x07, 0x55, 0x6e, 0x72, 0x65, 0x61, 0x64, 0x79, 0x10, 0x06, 0x42, 0x26, 0x5a,
+	0x24, 0x64, 0x75, 0x65, 0x2d, 0x6d, 0x61, 0x68, 0x6a, 0x6f, 0x6e, 0x67, 0x2d, 0x73, 0x65, 0x72,
+	0x76, 0x65, 0x72, 0x2f, 0x73, 0x68, 0x61, 0x72, 0x65, 0x64, 0x2f, 0x70, 0x62, 0x2f, 0x6d, 0x61,
+	0x68, 0x6a, 0x6f, 0x6e, 0x67, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -601,34 +906,46 @@ func file_mahjong_proto_rawDescGZIP() []byte {
 	return file_mahjong_proto_rawDescData
 }
 
-var file_mahjong_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
+var file_mahjong_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+var file_mahjong_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
 var file_mahjong_proto_goTypes = []interface{}{
-	(*FetchRoomsReq)(nil), // 0: mahjong.FetchRoomsReq
-	(*QuickStartReq)(nil), // 1: mahjong.QuickStartReq
-	(*QuickStartRes)(nil), // 2: mahjong.QuickStartRes
-	(*GameInfo)(nil),      // 3: mahjong.GameInfo
-	(*Room)(nil),          // 4: mahjong.Room
-	(*Table)(nil),         // 5: mahjong.Table
-	(*Seat)(nil),          // 6: mahjong.Seat
-	(*Player)(nil),        // 7: mahjong.Player
-	(*OfflineNotify)(nil), // 8: mahjong.OfflineNotify
-	(*OnlineNotify)(nil),  // 9: mahjong.OnlineNotify
-	(common.Code)(0),      // 10: common.Code
-	(*common.User)(nil),   // 11: common.User
+	(SeatState)(0),          // 0: mahjong.SeatState
+	(*QuickStartRes)(nil),   // 1: mahjong.QuickStartRes
+	(*SitDownReq)(nil),      // 2: mahjong.SitDownReq
+	(*SitDownRes)(nil),      // 3: mahjong.SitDownRes
+	(*StandUpRes)(nil),      // 4: mahjong.StandUpRes
+	(*ReadyRes)(nil),        // 5: mahjong.ReadyRes
+	(*UnreadyRes)(nil),      // 6: mahjong.UnreadyRes
+	(*GameInfo)(nil),        // 7: mahjong.GameInfo
+	(*FetchRoomsReq)(nil),   // 8: mahjong.FetchRoomsReq
+	(*Room)(nil),            // 9: mahjong.Room
+	(*Table)(nil),           // 10: mahjong.Table
+	(*Seat)(nil),            // 11: mahjong.Seat
+	(*Player)(nil),          // 12: mahjong.Player
+	(*SeatStateNotify)(nil), // 13: mahjong.SeatStateNotify
+	(common.Code)(0),        // 14: common.Code
+	(*common.User)(nil),     // 15: common.User
 }
 var file_mahjong_proto_depIdxs = []int32{
-	10, // 0: mahjong.QuickStartRes.Code:type_name -> common.Code
-	3,  // 1: mahjong.QuickStartRes.GameInfo:type_name -> mahjong.GameInfo
-	4,  // 2: mahjong.GameInfo.Room:type_name -> mahjong.Room
-	5,  // 3: mahjong.GameInfo.Table:type_name -> mahjong.Table
-	6,  // 4: mahjong.Table.Seats:type_name -> mahjong.Seat
-	7,  // 5: mahjong.Seat.Player:type_name -> mahjong.Player
-	11, // 6: mahjong.Player.User:type_name -> common.User
-	7,  // [7:7] is the sub-list for method output_type
-	7,  // [7:7] is the sub-list for method input_type
-	7,  // [7:7] is the sub-list for extension type_name
-	7,  // [7:7] is the sub-list for extension extendee
-	0,  // [0:7] is the sub-list for field type_name
+	14, // 0: mahjong.QuickStartRes.Code:type_name -> common.Code
+	7,  // 1: mahjong.QuickStartRes.GameInfo:type_name -> mahjong.GameInfo
+	14, // 2: mahjong.SitDownRes.Code:type_name -> common.Code
+	7,  // 3: mahjong.SitDownRes.GameInfo:type_name -> mahjong.GameInfo
+	14, // 4: mahjong.StandUpRes.Code:type_name -> common.Code
+	14, // 5: mahjong.ReadyRes.Code:type_name -> common.Code
+	14, // 6: mahjong.UnreadyRes.Code:type_name -> common.Code
+	9,  // 7: mahjong.GameInfo.Room:type_name -> mahjong.Room
+	10, // 8: mahjong.GameInfo.Table:type_name -> mahjong.Table
+	11, // 9: mahjong.Table.Seats:type_name -> mahjong.Seat
+	12, // 10: mahjong.Seat.Player:type_name -> mahjong.Player
+	15, // 11: mahjong.Player.User:type_name -> common.User
+	0,  // 12: mahjong.SeatStateNotify.SeatState:type_name -> mahjong.SeatState
+	12, // 13: mahjong.SeatStateNotify.Player:type_name -> mahjong.Player
+	14, // [14:14] is the sub-list for method output_type
+	14, // [14:14] is the sub-list for method input_type
+	14, // [14:14] is the sub-list for extension type_name
+	14, // [14:14] is the sub-list for extension extendee
+	0,  // [0:14] is the sub-list for field type_name
 }
 
 func init() { file_mahjong_proto_init() }
@@ -638,30 +955,6 @@ func file_mahjong_proto_init() {
 	}
 	if !protoimpl.UnsafeEnabled {
 		file_mahjong_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*FetchRoomsReq); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_mahjong_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QuickStartReq); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_mahjong_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*QuickStartRes); i {
 			case 0:
 				return &v.state
@@ -673,8 +966,32 @@ func file_mahjong_proto_init() {
 				return nil
 			}
 		}
+		file_mahjong_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*SitDownReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_mahjong_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*SitDownRes); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 		file_mahjong_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GameInfo); i {
+			switch v := v.(*StandUpRes); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -686,7 +1003,7 @@ func file_mahjong_proto_init() {
 			}
 		}
 		file_mahjong_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Room); i {
+			switch v := v.(*ReadyRes); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -698,7 +1015,7 @@ func file_mahjong_proto_init() {
 			}
 		}
 		file_mahjong_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Table); i {
+			switch v := v.(*UnreadyRes); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -710,7 +1027,7 @@ func file_mahjong_proto_init() {
 			}
 		}
 		file_mahjong_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Seat); i {
+			switch v := v.(*GameInfo); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -722,7 +1039,7 @@ func file_mahjong_proto_init() {
 			}
 		}
 		file_mahjong_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Player); i {
+			switch v := v.(*FetchRoomsReq); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -734,7 +1051,7 @@ func file_mahjong_proto_init() {
 			}
 		}
 		file_mahjong_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*OfflineNotify); i {
+			switch v := v.(*Room); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -746,7 +1063,43 @@ func file_mahjong_proto_init() {
 			}
 		}
 		file_mahjong_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*OnlineNotify); i {
+			switch v := v.(*Table); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_mahjong_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Seat); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_mahjong_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Player); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_mahjong_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*SeatStateNotify); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -763,13 +1116,14 @@ func file_mahjong_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_mahjong_proto_rawDesc,
-			NumEnums:      0,
-			NumMessages:   10,
+			NumEnums:      1,
+			NumMessages:   13,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
 		GoTypes:           file_mahjong_proto_goTypes,
 		DependencyIndexes: file_mahjong_proto_depIdxs,
+		EnumInfos:         file_mahjong_proto_enumTypes,
 		MessageInfos:      file_mahjong_proto_msgTypes,
 	}.Build()
 	File_mahjong_proto = out.File
