@@ -172,6 +172,12 @@ func (l *mahjong) sitDown(r node.Request) {
 		return
 	}
 
+	defer func() {
+		if err != nil {
+			l.playerMgr.UnloadPlayer(r.UID())
+		}
+	}()
+
 	err = seat.AddPlayer(player)
 	if err != nil {
 		switch errors.Code(err) {
@@ -182,6 +188,13 @@ func (l *mahjong) sitDown(r node.Request) {
 		default:
 			res.Code = common.Code_Failed
 		}
+		log.Errorf("sit down failed: uid: %d roomID: %d tableID: %d seatID: %d err: %v", r.UID(), req.RoomID, req.TableID, req.SeatID, err)
+		return
+	}
+
+	if err = r.BindNode(); err != nil {
+		log.Errorf("bind node failed: uid: %d err: %v", r.UID(), err)
+		res.Code = common.Code_Failed
 		return
 	}
 
