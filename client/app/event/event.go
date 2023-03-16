@@ -33,7 +33,7 @@ func Init(proxy client.Proxy) {
 			err := proxy.Push(0, route.Login, &pb.LoginReq{
 				Mode:     pb.LoginMode_Token,
 				DeviceID: store.DeviceID,
-				Token:    &store.Token,
+				Token:    store.Token,
 			})
 			if err != nil {
 				log.Errorf("push message failed: %v", err)

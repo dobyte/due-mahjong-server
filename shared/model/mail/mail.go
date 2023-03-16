@@ -22,6 +22,7 @@ type Attachment struct {
 	PropNum int `bson:"prop_num"` // 道具数量
 }
 
+//go:generate mongo-dao-generator -model-dir=. -model-names=Mail -dao-dir=../../dao/ -subpkg-enable=true
 type Mail struct {
 	ID          primitive.ObjectID `bson:"_id" gen:"autoFill"`
 	Title       string             `bson:"title"`                    // 邮件标题

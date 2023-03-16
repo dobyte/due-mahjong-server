@@ -1,8 +1,9 @@
 package route
 
 const (
-	Register = 1 // 用户注册
-	Login    = 2 // 用户登录
+	Register     = 1 // 用户注册
+	Login        = 2 // 用户登录
+	Unauthorized = 3 // 用户未授权
 )
 
 const (

@@ -22,12 +22,12 @@ enum LoginMode {
 message LoginReq {
   LoginMode Mode = 1; // 登录模式
   string DeviceID = 2; // 设备ID
-  optional string Account = 3; // 账号
-  optional string Password = 4; // 密码
-  optional string Openid = 5; // openid
-  optional string Mobile = 6; // 手机号
-  optional string Code = 7; // 验证码
-  optional string Token = 8; // TOKEN，微信、脸书、谷歌均用此token
+  string Account = 3; // 账号
+  string Password = 4; // 密码
+  string Openid = 5; // openid
+  string Mobile = 6; // 手机号
+  string Code = 7; // 验证码
+  string Token = 8; // TOKEN，微信、脸书、谷歌均用此token
 }
 
 // 用户登录响应

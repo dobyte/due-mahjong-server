@@ -1,2 +1,7 @@
 #!/bin/bash
-protoc --go_out=../../../ --go-grpc_out=.. *.proto
+
+for file in `ls .`; do
+    if [ -f ${file} ] && [ ${file##*.} == "proto" ]; then
+      protoc --gofast_out=../../../ ${file}
+    fi
+done

@@ -18,12 +18,12 @@ import (
 
 type Mail struct {
 	ctx     context.Context
-	proxy   node.Proxy
+	proxy   *node.Proxy
 	mailDao *maildao.Mail
 	userSvc *User
 }
 
-func NewMail(proxy node.Proxy) *Mail {
+func NewMail(proxy *node.Proxy) *Mail {
 	return &Mail{
 		ctx:     context.Background(),
 		proxy:   proxy,

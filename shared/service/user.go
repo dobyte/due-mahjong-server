@@ -12,11 +12,11 @@ import (
 
 type User struct {
 	ctx     context.Context
-	proxy   node.Proxy
+	proxy   *node.Proxy
 	userDao *userdao.User
 }
 
-func NewUser(proxy node.Proxy) *User {
+func NewUser(proxy *node.Proxy) *User {
 	return &User{
 		ctx:     context.Background(),
 		proxy:   proxy,

@@ -33,7 +33,9 @@ func NewPlayerMgr() *PlayerMgr {
 // code.NotFoundUser
 // code.InternalServerError
 func (mgr *PlayerMgr) LoadPlayer(uid int64) (*Player, error) {
+	mgr.rw.RLock()
 	player, ok := mgr.players[uid]
+	mgr.rw.RUnlock()
 	if ok {
 		return player, nil
 	}

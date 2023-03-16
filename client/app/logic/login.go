@@ -48,7 +48,7 @@ func (l *login) login(r client.Request) {
 
 	log.Info("login success")
 
-	err = l.proxy.Push(0, route.QuickStart, &commonpb.EmptyReq{})
+	err = l.proxy.Push(0, route.QuickStart, nil)
 	if err != nil {
 		log.Errorf("push message failed: %v", err)
 	}

@@ -22,12 +22,12 @@ import (
 
 type Login struct {
 	ctx     context.Context
-	proxy   node.Proxy
+	proxy   *node.Proxy
 	jwt     *jwt.JWT
 	userDao *userdao.User
 }
 
-func NewLogin(proxy node.Proxy) *Login {
+func NewLogin(proxy *node.Proxy) *Login {
 	return &Login{
 		ctx:     context.Background(),
 		proxy:   proxy,

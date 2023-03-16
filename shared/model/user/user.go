@@ -37,6 +37,7 @@ type ThirdPlatforms struct {
 	Facebook string `bson:"facebook"`
 }
 
+//go:generate mongo-dao-generator -model-dir=. -model-names=User -dao-dir=../../dao/ -subpkg-enable=true
 type User struct {
 	ID             primitive.ObjectID `bson:"_id" gen:"autoFill"`
 	UID            int64              `bson:"uid" gen:"autoIncr:uid"`         // 用户ID

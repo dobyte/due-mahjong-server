@@ -13,12 +13,12 @@ import (
 )
 
 type login struct {
-	proxy    node.Proxy
+	proxy    *node.Proxy
 	ctx      context.Context
 	loginSvc *service.Login
 }
 
-func NewLogin(proxy node.Proxy) *login {
+func NewLogin(proxy *node.Proxy) *login {
 	return &login{
 		proxy:    proxy,
 		ctx:      context.Background(),
@@ -27,34 +27,36 @@ func NewLogin(proxy node.Proxy) *login {
 }
 
 func (l *login) Init() {
-	// 用户注册
-	l.proxy.AddRouteHandler(route.Register, false, l.register)
-	// 用户登录
-	l.proxy.AddRouteHandler(route.Login, false, l.login)
+	l.proxy.Router().Group(func(group *node.RouterGroup) {
+		// 用户注册
+		group.AddRouteHandler(route.Register, false, l.register)
+		// 用户登录
+		group.AddRouteHandler(route.Login, false, l.login)
+	})
 }
 
 // 用户注册
-func (l *login) register(r node.Request) {
+func (l *login) register(ctx *node.Context) {
 
 }
 
 // 用户登录
-func (l *login) login(r node.Request) {
+func (l *login) login(ctx *node.Context) {
 	req := &pb.LoginReq{}
 	res := &pb.LoginRes{}
 	defer func() {
-		if err := r.Response(res); err != nil {
+		if err := ctx.Response(res); err != nil {
 			log.Errorf("login response failed, err: %v", err)
 		}
 	}()
 
-	if err := r.Parse(req); err != nil {
+	if err := ctx.Request.Parse(req); err != nil {
 		log.Errorf("invalid login message, err: %v", err)
 		res.Code = common.Code_Abnormal
 		return
 	}
 
-	clientIP, err := r.GetIP()
+	clientIP, err := ctx.GetIP()
 	if err != nil {
 		log.Errorf("get client ip failed, err: %v", err)
 		res.Code = common.Code_Abnormal
@@ -98,7 +100,7 @@ func (l *login) login(r node.Request) {
 		return
 	}
 
-	if err = r.BindGate(uid); err != nil {
+	if err = ctx.BindGate(uid); err != nil {
 		log.Errorf("bind gate failed, err: %v", err)
 		res.Code = common.Code_Failed
 		return
